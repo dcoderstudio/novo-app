@@ -250,12 +250,9 @@ export default function App(){
       <LoginModal/>
       <div style={{minHeight:"100vh",background:BG,color:TEXT}}>
         <div style={{background:G_NAV,padding:"0 2rem",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
-          <div style={{display:"flex",alignItems:"center",gap:12}}>
-            <div style={{width:36,height:36,background:"rgba(255,255,255,0.15)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>♻️</div>
-            <div>
-              <div style={{color:WHITE,fontWeight:800,fontSize:15}}>novo nordisk</div>
-              <div style={{color:"rgba(255,255,255,0.5)",fontSize:10,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>Programa de Economía Circular</div>
-            </div>
+          <div style={{display:"flex",alignItems:"center",gap:14}}>
+            <img src="/logonovo.svg" alt="Novo Nordisk" style={{height:36,width:"auto"}}/>
+            <div style={{color:"rgba(255,255,255,0.5)",fontSize:10,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>Programa de Economía Circular</div>
           </div>
           {!isAdmin
             ?<button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>setShowLogin(true)}>⚙ Admin</button>
