@@ -42,9 +42,7 @@ const FONT=`*{font-family:'Montserrat',sans-serif;box-sizing:border-box;margin:0
 ::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#C5CFDF;border-radius:99px;}
 input,select,textarea{font-family:'Montserrat',sans-serif;}
 @keyframes histModalIn{from{opacity:0;}to{opacity:1;}}
-@keyframes histSlideIn{from{opacity:0;}to{opacity:1;}}
 @keyframes histPop{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
-.hist-slide{animation:histSlideIn 0.5s cubic-bezier(0.22,1,0.36,1) backwards;}
 .hist-stat{animation:histPop 0.5s cubic-bezier(0.22,1,0.36,1) backwards;}
 .hist-nav-btn{transition:transform 0.15s ease,background 0.15s ease;}
 .hist-nav-btn:hover:not(:disabled){transform:scale(1.1);background:rgba(255,255,255,0.22);}
@@ -660,7 +658,7 @@ export default function App(){
           </div>
         </div>
         <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 2rem 1rem",overflow:"hidden"}}>
-        <div key={curIdx} className="hist-slide" style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
           {page.type==="intro"&&(
             <div style={{textAlign:"center",maxWidth:760}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:14}}>Programa de Economía Circular</div>
