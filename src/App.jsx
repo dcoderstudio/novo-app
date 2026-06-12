@@ -113,6 +113,10 @@ export default function App(){
   const [editPiezaData,setEditPiezaData]=useState(null);
   const [showNewPieza,setShowNewPieza]=useState(false);
   const [newPiezaData,setNewPiezaData]=useState({nombre:"",cantidad:1,kgPieza:0,imagen:""});
+  const [showHistoria,setShowHistoria]=useState(false);
+  const [slideIdx,setSlideIdx]=useState(0);
+  const [descubrimientos,setDescubrimientos]=useState(["Aquí aparecerán los descubrimientos del proyecto."]);
+  const [proyecciones,setProyecciones]=useState(["Aquí aparecerán las proyecciones a futuro del proyecto."]);
 
   const totalBruto=recs.reduce((s,r)=>s+Number(r.kgBruto),0);
   const totalReal=recs.reduce((s,r)=>s+Number(r.kgReal),0);
@@ -238,22 +242,163 @@ export default function App(){
     );
   };
 
+  const ListaEditable=({titulo,subtitulo,icon,items,setItems})=>(
+    <div style={{maxWidth:680,width:"100%"}}>
+      <div style={{textAlign:"center",marginBottom:28}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>{subtitulo}</div>
+        <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900}}>{titulo}</div>
+      </div>
+      <div style={{maxHeight:"50vh",overflowY:"auto",paddingRight:4}}>
+        {items.map((it,i)=>(
+          <div key={i} style={{display:"flex",gap:12,alignItems:"flex-start",background:"rgba(255,255,255,0.08)",borderRadius:12,padding:"12px 16px",marginBottom:10}}>
+            <span style={{fontSize:18,flexShrink:0}}>{icon}</span>
+            {isAdmin
+              ?<textarea value={it} onChange={e=>setItems(arr=>arr.map((x,j)=>j===i?e.target.value:x))} style={{flex:1,background:"transparent",border:"none",color:WHITE,fontSize:14,fontWeight:600,lineHeight:1.5,resize:"vertical",minHeight:40,outline:"none",fontFamily:"inherit"}}/>
+              :<div style={{flex:1,fontSize:14,fontWeight:600,lineHeight:1.5}}>{it}</div>
+            }
+            {isAdmin&&<button onClick={()=>setItems(arr=>arr.filter((_,j)=>j!==i))} style={{background:"rgba(255,255,255,0.1)",border:"none",color:WHITE,borderRadius:6,width:26,height:26,cursor:"pointer",fontSize:12,flexShrink:0}}>🗑</button>}
+          </div>
+        ))}
+      </div>
+      {isAdmin&&<button onClick={()=>setItems(arr=>[...arr,""])} style={{marginTop:12,background:"rgba(255,255,255,0.15)",border:`1px solid rgba(255,255,255,0.25)`,color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>+ Agregar punto</button>}
+    </div>
+  );
+
+  const HISTORIA_SLIDES=["intro","trayecto","produccion","piezas","descubrimientos","proyecciones"];
+
+  const HistoriaModal=()=>{
+    if(!showHistoria) return null;
+    const close=()=>{setShowHistoria(false);setSlideIdx(0);};
+    const goTo=i=>setSlideIdx(Math.max(0,Math.min(HISTORIA_SLIDES.length-1,i)));
+    const slide=HISTORIA_SLIDES[slideIdx];
+    const sortedRecs=[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha));
+    const navBtn=(dir)=>{
+      const disabled=dir<0?slideIdx===0:slideIdx===HISTORIA_SLIDES.length-1;
+      return(
+        <button onClick={()=>goTo(slideIdx+dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
+      );
+    };
+    return(
+      <div style={{position:"fixed",inset:0,background:G_HERO,zIndex:200,display:"flex",flexDirection:"column",color:WHITE}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"1.25rem 2rem",flexShrink:0}}>
+          <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",opacity:0.5}}>Waste Into Value — Nuestra Historia</div>
+          <button onClick={close} style={{background:"rgba(255,255,255,0.12)",border:"none",color:WHITE,borderRadius:8,width:32,height:32,fontSize:16,cursor:"pointer"}}>✕</button>
+        </div>
+        <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 2rem 1rem",overflow:"hidden"}}>
+          {slide==="intro"&&(
+            <div style={{textAlign:"center",maxWidth:760}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:14}}>Programa de Economía Circular</div>
+              <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
+              <div style={{fontSize:16,opacity:0.7,marginBottom:40,lineHeight:1.6,maxWidth:560,marginLeft:"auto",marginRight:"auto"}}>De residuo plástico a productos con propósito: este es el recorrido del proyecto desde su primera entrega hasta hoy.</div>
+              <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,56px)",flexWrap:"wrap"}}>
+                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:`${pct}%`,l:"de la meta"}].map(s=>(
+                  <div key={s.l}>
+                    <div style={{fontSize:"clamp(28px,5vw,44px)",fontWeight:900}}>{s.v}</div>
+                    <div style={{fontSize:11,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {slide==="trayecto"&&(
+            <div style={{maxWidth:760,width:"100%",height:"100%",display:"flex",flexDirection:"column"}}>
+              <div style={{textAlign:"center",marginBottom:8,flexShrink:0}}>
+                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Trayecto</div>
+                <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900}}>{recs.length} recepciones desde {sortedRecs[0]?.fecha}</div>
+              </div>
+              <div style={{flex:1,overflowY:"auto",marginTop:24,paddingRight:8}}>
+                {sortedRecs.map((r,i)=>(
+                  <div key={r.id} style={{display:"flex",gap:16}}>
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:0}}>
+                      <div style={{width:12,height:12,borderRadius:"50%",background:WHITE,marginTop:6}}/>
+                      {i<sortedRecs.length-1&&<div style={{width:2,flex:1,background:"rgba(255,255,255,0.2)"}}/>}
+                    </div>
+                    <div style={{paddingBottom:22}}>
+                      <div style={{fontSize:12,fontWeight:800,opacity:0.5,letterSpacing:1}}>{r.fecha}</div>
+                      <div style={{fontSize:19,fontWeight:900,marginTop:2}}>{fmt(r.kgReal)} kg <span style={{fontSize:12,fontWeight:700,opacity:0.5}}>· {r.estado}</span></div>
+                      {r.transformadoEn&&<div style={{fontSize:13,opacity:0.65,marginTop:4,lineHeight:1.5}}>{r.transformadoEn}</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {slide==="produccion"&&(
+            <div style={{maxWidth:900,width:"100%",textAlign:"center"}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Proceso de Producción</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:36}}>De residuo a producto terminado</div>
+              <div style={{display:"flex",justifyContent:"center",gap:10,flexWrap:"wrap"}}>
+                {ETAPAS.map((e,i)=>{
+                  const count=pedidos.filter(p=>p.etapa===i).length;
+                  return(
+                    <div key={i} style={{background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1.25rem 1rem",minWidth:104,position:"relative"}}>
+                      <div style={{fontSize:28,marginBottom:6}}>{ETAPA_ICONS[i]}</div>
+                      <div style={{fontSize:12,fontWeight:800}}>{e}</div>
+                      {count>0&&<div style={{position:"absolute",top:-8,right:-8,background:WHITE,color:BLUE,borderRadius:99,width:22,height:22,fontSize:11,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center"}}>{count}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {slide==="piezas"&&(
+            <div style={{maxWidth:800,width:"100%",textAlign:"center"}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Lo que hemos creado</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>{fmt(totalPiezas)} piezas fabricadas</div>
+              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>a partir de plástico reciclado</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:16}}>
+                {PIEZAS_TIPOS.map((tipo,i)=>{
+                  const items=detalle[tipo];
+                  const totalUnd=items.reduce((s,p)=>s+p.cantidad,0);
+                  const totalKg=items.reduce((s,p)=>s+p.cantidad*p.kgPieza,0);
+                  return(
+                    <div key={tipo} style={{background:"rgba(255,255,255,0.1)",borderRadius:16,padding:"1.5rem"}}>
+                      <div style={{fontSize:32,marginBottom:8}}>{PIEZAS_ICONS[i]}</div>
+                      <div style={{fontSize:30,fontWeight:900}}>{totalUnd}</div>
+                      <div style={{fontSize:12,opacity:0.6,fontWeight:700,marginTop:4}}>{tipo}</div>
+                      <div style={{fontSize:11,opacity:0.45,fontWeight:600,marginTop:2}}>{fmt(totalKg)} kg</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {slide==="descubrimientos"&&<ListaEditable titulo="Descubrimientos sobre la marcha" subtitulo="Aprendizajes" icon="💡" items={descubrimientos} setItems={setDescubrimientos}/>}
+          {slide==="proyecciones"&&<ListaEditable titulo="Proyecciones a futuro" subtitulo="Lo que viene" icon="🚀" items={proyecciones} setItems={setProyecciones}/>}
+        </div>
+        <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:20,padding:"1.5rem 2rem 2rem",flexShrink:0}}>
+          {navBtn(-1)}
+          <div style={{display:"flex",gap:8}}>
+            {HISTORIA_SLIDES.map((s,i)=>(
+              <div key={s} onClick={()=>goTo(i)} style={{width:i===slideIdx?28:9,height:9,borderRadius:99,background:i===slideIdx?WHITE:"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.25s"}}/>
+            ))}
+          </div>
+          {navBtn(1)}
+        </div>
+      </div>
+    );
+  };
+
   return(
     <>
       <style>{FONT}</style>
+      <HistoriaModal/>
       <div style={{minHeight:"100vh",background:BG,color:TEXT}}>
         <div style={{background:G_NAV,padding:"0 2rem",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
           <div style={{display:"flex",alignItems:"center",gap:14}}>
             <img src="/logonovo.svg" alt="Novo Nordisk" style={{height:36,width:"auto"}}/>
             <div style={{color:"rgba(255,255,255,0.5)",fontSize:10,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>Programa de Economía Circular</div>
           </div>
-          {!isAdmin
-            ?<button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>setIsAdmin(true)}>⚙ Admin</button>
-            :<div style={{display:"flex",alignItems:"center",gap:8}}>
-               <span style={{color:"#FDE68A",fontSize:11,fontWeight:700}}>✏️ Editando</span>
-               <button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={exitAdmin}>Salir</button>
-             </div>
-          }
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>setShowHistoria(true)}>📖 Ver Historia</button>
+            {!isAdmin
+              ?<button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>setIsAdmin(true)}>⚙ Admin</button>
+              :<div style={{display:"flex",alignItems:"center",gap:8}}>
+                 <span style={{color:"#FDE68A",fontSize:11,fontWeight:700}}>✏️ Editando</span>
+                 <button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={exitAdmin}>Salir</button>
+               </div>
+            }
+          </div>
         </div>
         {isAdmin&&<div style={{background:"#FFFBEB",borderBottom:`1px solid #FDE68A`,padding:"7px 2rem",display:"flex",alignItems:"center",gap:8}}>
           <span style={{fontSize:12,fontWeight:700,color:"#92400E"}}>✏️ Modo edición activo</span>
