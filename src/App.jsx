@@ -17,7 +17,15 @@ const fmt=n=>Number(n).toLocaleString("es-MX");
 
 const FONT=`*{font-family:'Montserrat',sans-serif;box-sizing:border-box;margin:0;padding:0;}
 ::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#C5CFDF;border-radius:99px;}
-input,select,textarea{font-family:'Montserrat',sans-serif;}`;
+input,select,textarea{font-family:'Montserrat',sans-serif;}
+@keyframes histModalIn{from{opacity:0;}to{opacity:1;}}
+@keyframes histSlideIn{from{opacity:0;transform:translateY(28px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes histPop{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
+.hist-slide{animation:histSlideIn 0.5s cubic-bezier(0.22,1,0.36,1);}
+.hist-stat{animation:histPop 0.5s cubic-bezier(0.22,1,0.36,1) backwards;}
+.hist-nav-btn{transition:transform 0.15s ease,background 0.15s ease;}
+.hist-nav-btn:hover:not(:disabled){transform:scale(1.1);background:rgba(255,255,255,0.22);}
+.hist-dot:hover{background:rgba(255,255,255,0.5)!important;}`;
 
 const RECEPCIONES_INIT=[
   {id:1,fecha:"2024-09-30",kgBruto:150,kgReal:120,estado:"Transformado",transformadoEn:"2 Mesas (28kg), 2 Macetas (18kg), 2 Bancos (14kg), 8 Logotipos (56kg)",obs:"Primer entrega"},
@@ -275,24 +283,25 @@ export default function App(){
     const navBtn=(dir)=>{
       const disabled=dir<0?slideIdx===0:slideIdx===HISTORIA_SLIDES.length-1;
       return(
-        <button onClick={()=>goTo(slideIdx+dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
+        <button className="hist-nav-btn" onClick={()=>goTo(slideIdx+dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
       );
     };
     return(
-      <div style={{position:"fixed",inset:0,background:G_HERO,zIndex:200,display:"flex",flexDirection:"column",color:WHITE}}>
+      <div style={{position:"fixed",inset:0,background:G_HERO,zIndex:200,display:"flex",flexDirection:"column",color:WHITE,animation:"histModalIn 0.35s ease"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"1.25rem 2rem",flexShrink:0}}>
           <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",opacity:0.5}}>Waste Into Value — Nuestra Historia</div>
           <button onClick={close} style={{background:"rgba(255,255,255,0.12)",border:"none",color:WHITE,borderRadius:8,width:32,height:32,fontSize:16,cursor:"pointer"}}>✕</button>
         </div>
         <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 2rem 1rem",overflow:"hidden"}}>
+        <div key={slideIdx} className="hist-slide" style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
           {slide==="intro"&&(
             <div style={{textAlign:"center",maxWidth:760}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:14}}>Programa de Economía Circular</div>
               <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
               <div style={{fontSize:16,opacity:0.7,marginBottom:40,lineHeight:1.6,maxWidth:560,marginLeft:"auto",marginRight:"auto"}}>De residuo plástico a productos con propósito: este es el recorrido del proyecto desde su primera entrega hasta hoy.</div>
               <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,56px)",flexWrap:"wrap"}}>
-                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:`${pct}%`,l:"de la meta"}].map(s=>(
-                  <div key={s.l}>
+                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:`${pct}%`,l:"de la meta"}].map((s,i)=>(
+                  <div key={s.l} className="hist-stat" style={{animationDelay:`${0.15+i*0.1}s`}}>
                     <div style={{fontSize:"clamp(28px,5vw,44px)",fontWeight:900}}>{s.v}</div>
                     <div style={{fontSize:11,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
                   </div>
@@ -331,7 +340,7 @@ export default function App(){
                 {ETAPAS.map((e,i)=>{
                   const count=pedidos.filter(p=>p.etapa===i).length;
                   return(
-                    <div key={i} style={{background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1.25rem 1rem",minWidth:104,position:"relative"}}>
+                    <div key={i} className="hist-stat" style={{animationDelay:`${0.1+i*0.08}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1.25rem 1rem",minWidth:104,position:"relative"}}>
                       <div style={{fontSize:28,marginBottom:6}}>{ETAPA_ICONS[i]}</div>
                       <div style={{fontSize:12,fontWeight:800}}>{e}</div>
                       {count>0&&<div style={{position:"absolute",top:-8,right:-8,background:WHITE,color:BLUE,borderRadius:99,width:22,height:22,fontSize:11,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center"}}>{count}</div>}
@@ -352,7 +361,7 @@ export default function App(){
                   const totalUnd=items.reduce((s,p)=>s+p.cantidad,0);
                   const totalKg=items.reduce((s,p)=>s+p.cantidad*p.kgPieza,0);
                   return(
-                    <div key={tipo} style={{background:"rgba(255,255,255,0.1)",borderRadius:16,padding:"1.5rem"}}>
+                    <div key={tipo} className="hist-stat" style={{animationDelay:`${0.1+i*0.08}s`,background:"rgba(255,255,255,0.1)",borderRadius:16,padding:"1.5rem"}}>
                       <div style={{fontSize:32,marginBottom:8}}>{PIEZAS_ICONS[i]}</div>
                       <div style={{fontSize:30,fontWeight:900}}>{totalUnd}</div>
                       <div style={{fontSize:12,opacity:0.6,fontWeight:700,marginTop:4}}>{tipo}</div>
@@ -366,11 +375,12 @@ export default function App(){
           {slide==="descubrimientos"&&<ListaEditable titulo="Descubrimientos sobre la marcha" subtitulo="Aprendizajes" icon="💡" items={descubrimientos} setItems={setDescubrimientos}/>}
           {slide==="proyecciones"&&<ListaEditable titulo="Proyecciones a futuro" subtitulo="Lo que viene" icon="🚀" items={proyecciones} setItems={setProyecciones}/>}
         </div>
+        </div>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:20,padding:"1.5rem 2rem 2rem",flexShrink:0}}>
           {navBtn(-1)}
           <div style={{display:"flex",gap:8}}>
             {HISTORIA_SLIDES.map((s,i)=>(
-              <div key={s} onClick={()=>goTo(i)} style={{width:i===slideIdx?28:9,height:9,borderRadius:99,background:i===slideIdx?WHITE:"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.25s"}}/>
+              <div key={s} className="hist-dot" onClick={()=>goTo(i)} style={{width:i===slideIdx?28:9,height:9,borderRadius:99,background:i===slideIdx?WHITE:"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.25s"}}/>
             ))}
           </div>
           {navBtn(1)}
