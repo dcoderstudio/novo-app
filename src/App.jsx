@@ -13,6 +13,19 @@ const PIEZAS_GRADS=["linear-gradient(135deg,#002D5C,#1A5FA8)","linear-gradient(1
 const KG_POR_PLUMA=0.04;
 const ETAPAS=["Recepción","Limpieza","Molienda","Placas","Corte","Ensamble","Entregado","Facturado","Pagado"];
 const ETAPA_ICONS=["📦","🧹","⚙️","🟦","✂️","🔩","✅","🧾","💰"];
+const PROCESO_PRODUCCION=["Recolección","Triturado","Fabricación de molde en CNC","Prensado y vulcanización","Desmoldeo","Aplanado","Corte en CNC","Lijado y pulido","Armado"];
+const PROCESO_ICONS=["🚚","🔨","🛠️","🔥","📤","🟦","✂️","✨","🧩"];
+const PIEZAS_HISTORIA=[
+  {nombre:"Bancos altos",cantidad:8,icon:"🪑"},
+  {nombre:"Bancos bajos",cantidad:2,icon:"🪵"},
+  {nombre:"Mesas",cantidad:2,icon:"🍽️"},
+  {nombre:"Macetas",cantidad:2,icon:"🪴"},
+  {nombre:"Logo de piso",cantidad:1,icon:"🏷️"},
+  {nombre:"Logotipos para oficinas",cantidad:8,icon:"🔖"},
+  {nombre:"Reconocimientos",cantidad:76,icon:"🏆"},
+  {nombre:"Mural interactivo",cantidad:1,icon:"🖼️"},
+  {nombre:"Bote de desechos electrónicos",cantidad:1,icon:"♻️"},
+];
 const fmt=n=>Number(n).toLocaleString("es-MX");
 
 const FONT=`*{font-family:'Montserrat',sans-serif;box-sizing:border-box;margin:0;padding:0;}
@@ -123,8 +136,18 @@ export default function App(){
   const [newPiezaData,setNewPiezaData]=useState({nombre:"",cantidad:1,kgPieza:0,imagen:""});
   const [showHistoria,setShowHistoria]=useState(false);
   const [slideIdx,setSlideIdx]=useState(0);
-  const [descubrimientos,setDescubrimientos]=useState(["Aquí aparecerán los descubrimientos del proyecto."]);
-  const [proyecciones,setProyecciones]=useState(["Aquí aparecerán las proyecciones a futuro del proyecto."]);
+  const [descubrimientos,setDescubrimientos]=useState([
+    "Desperdicio mínimo del material: las piezas que sobran o se descartan se pueden volver a moler y prensar de nuevo, y el polvo también se reutiliza — prácticamente cero desperdicio.",
+    "Alta resistencia estructural con refuerzo metálico y uniones mecánicas: usamos varilla metálica reciclada de alta resistencia y tuercas en las uniones.",
+    "Impacto positivo en las personas: genera asombro y conversación, reforzando el mensaje de sostenibilidad de la marca.",
+  ]);
+  const [proyecciones,setProyecciones]=useState([
+    "Unificar procesos en una sola locación, para optimizar tiempos, recursos, control de calidad y responsabilidad ambiental.",
+    "Mejorar procesos de producción: aumentar eficiencia y escalabilidad (horno y prensa más grandes y efectivos), sin perder el detalle y proceso humano.",
+    "Elevar los estándares de seguridad y calidad.",
+    "Colaborar con artistas, diseñadores y comunidades locales para crear piezas con valor cultural y social.",
+    "Generar empleo y capacitación para más personas, según el proyecto lo requiera.",
+  ]);
 
   const totalBruto=recs.reduce((s,r)=>s+Number(r.kgBruto),0);
   const totalReal=recs.reduce((s,r)=>s+Number(r.kgReal),0);
@@ -272,7 +295,7 @@ export default function App(){
     </div>
   );
 
-  const HISTORIA_SLIDES=["intro","trayecto","produccion","piezas","descubrimientos","proyecciones"];
+  const HISTORIA_SLIDES=["intro","proyecto","trayecto","produccion","piezas","descubrimientos","proyecciones"];
 
   const HistoriaModal=()=>{
     if(!showHistoria) return null;
@@ -300,10 +323,29 @@ export default function App(){
               <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
               <div style={{fontSize:16,opacity:0.7,marginBottom:40,lineHeight:1.6,maxWidth:560,marginLeft:"auto",marginRight:"auto"}}>De residuo plástico a productos con propósito: este es el recorrido del proyecto desde su primera entrega hasta hoy.</div>
               <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,56px)",flexWrap:"wrap"}}>
-                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:`${pct}%`,l:"de la meta"}].map((s,i)=>(
+                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:"+150",l:"personas impactadas"},{v:`${pct}%`,l:"de la meta"}].map((s,i)=>(
                   <div key={s.l} className="hist-stat" style={{animationDelay:`${0.15+i*0.1}s`}}>
                     <div style={{fontSize:"clamp(28px,5vw,44px)",fontWeight:900}}>{s.v}</div>
                     <div style={{fontSize:11,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {slide==="proyecto"&&(
+            <div style={{maxWidth:820,width:"100%"}}>
+              <div style={{textAlign:"center",marginBottom:28}}>
+                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Proyecto</div>
+                <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900}}>Objetivo y Contexto</div>
+              </div>
+              <div style={{fontSize:15,opacity:0.75,lineHeight:1.7,textAlign:"center",maxWidth:680,margin:"0 auto 32px"}}>
+                Crear objetos funcionales y decorativos para las nuevas oficinas de Novo Nordisk México a partir de plumas de inyección recicladas: un entorno de trabajo inspirador que respalda el compromiso de la empresa con la sustentabilidad y la reducción de residuos.
+              </div>
+              <div style={{display:"flex",justifyContent:"center",gap:"clamp(16px,4vw,40px)",flexWrap:"wrap"}}>
+                {[{v:"78%",l:"de residuos se recicla"},{v:"0.3%",l:"a vertederos"},{v:"100%",l:"energía renovable"},{v:"2030",l:"meta cero emisiones CO₂"}].map((s,i)=>(
+                  <div key={s.l} className="hist-stat" style={{animationDelay:`${0.1+i*0.08}s`,background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"1rem 1.25rem",minWidth:130,textAlign:"center"}}>
+                    <div style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900}}>{s.v}</div>
+                    <div style={{fontSize:10,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
                   </div>
                 ))}
               </div>
@@ -334,41 +376,33 @@ export default function App(){
           )}
           {slide==="produccion"&&(
             <div style={{maxWidth:900,width:"100%",textAlign:"center"}}>
-              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Proceso de Producción</div>
-              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:36}}>De residuo a producto terminado</div>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Ruta de Acción</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>¿Cómo logramos nuestro objetivo?</div>
+              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>De residuo plástico a producto terminado, paso a paso</div>
               <div style={{display:"flex",justifyContent:"center",gap:10,flexWrap:"wrap"}}>
-                {ETAPAS.map((e,i)=>{
-                  const count=pedidos.filter(p=>p.etapa===i).length;
-                  return(
-                    <div key={i} className="hist-stat" style={{animationDelay:`${0.1+i*0.08}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1.25rem 1rem",minWidth:104,position:"relative"}}>
-                      <div style={{fontSize:28,marginBottom:6}}>{ETAPA_ICONS[i]}</div>
-                      <div style={{fontSize:12,fontWeight:800}}>{e}</div>
-                      {count>0&&<div style={{position:"absolute",top:-8,right:-8,background:WHITE,color:BLUE,borderRadius:99,width:22,height:22,fontSize:11,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center"}}>{count}</div>}
-                    </div>
-                  );
-                })}
+                {PROCESO_PRODUCCION.map((e,i)=>(
+                  <div key={i} className="hist-stat" style={{animationDelay:`${0.06+i*0.06}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1.25rem 1rem",minWidth:120,maxWidth:150,position:"relative"}}>
+                    <div style={{position:"absolute",top:8,left:10,fontSize:10,opacity:0.35,fontWeight:800}}>{i+1}</div>
+                    <div style={{fontSize:28,marginBottom:6}}>{PROCESO_ICONS[i]}</div>
+                    <div style={{fontSize:12,fontWeight:800,lineHeight:1.3}}>{e}</div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
           {slide==="piezas"&&(
-            <div style={{maxWidth:800,width:"100%",textAlign:"center"}}>
+            <div style={{maxWidth:860,width:"100%",textAlign:"center"}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Lo que hemos creado</div>
-              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>{fmt(totalPiezas)} piezas fabricadas</div>
-              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>a partir de plástico reciclado</div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:16}}>
-                {PIEZAS_TIPOS.map((tipo,i)=>{
-                  const items=detalle[tipo];
-                  const totalUnd=items.reduce((s,p)=>s+p.cantidad,0);
-                  const totalKg=items.reduce((s,p)=>s+p.cantidad*p.kgPieza,0);
-                  return(
-                    <div key={tipo} className="hist-stat" style={{animationDelay:`${0.1+i*0.08}s`,background:"rgba(255,255,255,0.1)",borderRadius:16,padding:"1.5rem"}}>
-                      <div style={{fontSize:32,marginBottom:8}}>{PIEZAS_ICONS[i]}</div>
-                      <div style={{fontSize:30,fontWeight:900}}>{totalUnd}</div>
-                      <div style={{fontSize:12,opacity:0.6,fontWeight:700,marginTop:4}}>{tipo}</div>
-                      <div style={{fontSize:11,opacity:0.45,fontWeight:600,marginTop:2}}>{fmt(totalKg)} kg</div>
-                    </div>
-                  );
-                })}
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>101 piezas creadas</div>
+              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>a partir de plástico reciclado · +500 kg transformados hasta ahora</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:14}}>
+                {PIEZAS_HISTORIA.map((p,i)=>(
+                  <div key={p.nombre} className="hist-stat" style={{animationDelay:`${0.06+i*0.05}s`,background:"rgba(255,255,255,0.1)",borderRadius:16,padding:"1.25rem"}}>
+                    <div style={{fontSize:28,marginBottom:8}}>{p.icon}</div>
+                    <div style={{fontSize:28,fontWeight:900}}>{p.cantidad}</div>
+                    <div style={{fontSize:11,opacity:0.6,fontWeight:700,marginTop:4,lineHeight:1.3}}>{p.nombre}</div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
