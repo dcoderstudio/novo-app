@@ -42,7 +42,7 @@ const FONT=`*{font-family:'Montserrat',sans-serif;box-sizing:border-box;margin:0
 ::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#C5CFDF;border-radius:99px;}
 input,select,textarea{font-family:'Montserrat',sans-serif;}
 @keyframes histModalIn{from{opacity:0;}to{opacity:1;}}
-@keyframes histSlideIn{from{opacity:0;transform:translateY(28px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes histSlideIn{from{opacity:0;}to{opacity:1;}}
 @keyframes histPop{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
 .hist-slide{animation:histSlideIn 0.5s cubic-bezier(0.22,1,0.36,1) backwards;}
 .hist-stat{animation:histPop 0.5s cubic-bezier(0.22,1,0.36,1) backwards;}
