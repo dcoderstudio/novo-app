@@ -176,8 +176,11 @@ export default function App(){
   const totalPiezas=Object.values(detalle).reduce((s,arr)=>s+arr.reduce((a,p)=>a+p.cantidad,0),0);
   const pct=Math.min(100,Math.round((totalReal/metaKg)*100));
   const kgPorEstado=estado=>recs.filter(r=>r.estado===estado).reduce((s,r)=>s+Number(r.kgReal),0);
-  const transformadoKg=kgPorEstado("Transformado");
   const enPlacasKg=kgPorEstado("En Placas");
+  const transformadoKg=recs.reduce((s,r)=>{
+    if((r.desglose||[]).length>0) return s+r.desglose.reduce((a,d)=>a+(d.estado==="Transformado"?Number(d.cantidad||0):0),0);
+    return s+(r.estado==="Transformado"?Number(r.kgReal):0);
+  },0);
   const totalAsignado=recs.reduce((s,r)=>s+(r.desglose||[]).reduce((a,d)=>a+Number(d.cantidad||0),0),0);
   const libreKg=totalReal-totalAsignado;
 
@@ -668,7 +671,7 @@ export default function App(){
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
                 {[
                   {label:"Recibido",val:`${fmt(totalBruto)} kg`,grad:"linear-gradient(135deg,#475569,#6B7A99)"},
-                  {label:"Transformado",val:`${fmt(transformadoKg)} kg`,grad:G_GREEN},
+                  {label:"Transformado - Entregado",val:`${fmt(transformadoKg)} kg`,grad:G_GREEN},
                   {label:"En placas",val:`${fmt(enPlacasKg)} kg`,grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Libre para transformar",val:`${fmt(libreKg)} kg`,grad:G_BLUE},
                 ].map(k=>(
