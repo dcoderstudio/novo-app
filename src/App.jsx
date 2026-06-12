@@ -638,6 +638,7 @@ export default function App(){
                 {[
                   {label:"KG brutos recibidos",val:fmt(totalBruto),unit:"kg",grad:G_BLUE},
                   {label:"KG reales netos",val:fmt(totalReal),unit:"kg",grad:"linear-gradient(135deg,#1A5FA8,#2176C2)"},
+                  {label:"Transformado - Entregado",val:fmt(transformadoKg),unit:"kg",grad:G_GREEN},
                   {label:"Recepciones",val:recs.length,unit:"lotes",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Pedidos activos",val:pedidos.filter(p=>p.etapa<6).length,unit:"en proceso",grad:G_GREEN},
                 ].map(k=>(
