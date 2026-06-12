@@ -209,19 +209,34 @@ export default function App(){
     </div>
   );
 
-  const PiezaForm=({data,onChange,onSave,onCancel})=>(
-    <div style={{background:BLUE_L,borderRadius:12,padding:"1rem",border:`1.5px solid ${BLUE}`,marginBottom:10}}>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:8,marginBottom:8}}>
-        {[["Nombre","text","nombre"],["Cantidad","number","cantidad"],["KG por pieza","number","kgPieza"]].map(([lbl,type,key])=>(
-          <div key={key}><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>{lbl}</div>
-          <input style={inpSm} type={type} value={data[key]} onChange={e=>onChange({...data,[key]:e.target.value})}/></div>
-        ))}
+  const PiezaForm=({data,onChange,onSave,onCancel})=>{
+    const handleImagen=e=>{
+      const file=e.target.files[0];
+      if(!file) return;
+      const reader=new FileReader();
+      reader.onload=()=>onChange({...data,imagen:reader.result});
+      reader.readAsDataURL(file);
+    };
+    return(
+      <div style={{background:BLUE_L,borderRadius:12,padding:"1rem",border:`1.5px solid ${BLUE}`,marginBottom:10}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:8,marginBottom:8}}>
+          {[["Nombre","text","nombre"],["Cantidad","number","cantidad"],["KG por pieza","number","kgPieza"]].map(([lbl,type,key])=>(
+            <div key={key}><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>{lbl}</div>
+            <input style={inpSm} type={type} value={data[key]} onChange={e=>onChange({...data,[key]:e.target.value})}/></div>
+          ))}
+        </div>
+        <div style={{marginBottom:10}}>
+          <div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>Foto del producto (opcional)</div>
+          <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
+            {data.imagen&&<img src={data.imagen} alt="" style={{width:48,height:48,borderRadius:8,objectFit:"cover",border:`1px solid ${BORDER}`}}/>}
+            <input style={{...inpSm,padding:"5px 6px",width:"auto",flex:1}} type="file" accept="image/*" onChange={handleImagen}/>
+            {data.imagen&&<button type="button" onClick={()=>onChange({...data,imagen:""})} style={{background:WHITE,color:"#DC2626",border:`1px solid ${BORDER}`,borderRadius:6,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:"pointer"}}>Quitar</button>}
+          </div>
+        </div>
+        <div style={{display:"flex",gap:6}}><SaveBtn onClick={()=>onSave(data)}/><CancelBtn onClick={onCancel}/></div>
       </div>
-      <div style={{marginBottom:10}}><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>URL de imagen (opcional)</div>
-        <input style={inpSm} type="text" placeholder="https://..." value={data.imagen} onChange={e=>onChange({...data,imagen:e.target.value})}/></div>
-      <div style={{display:"flex",gap:6}}><SaveBtn onClick={()=>onSave(data)}/><CancelBtn onClick={onCancel}/></div>
-    </div>
-  );
+    );
+  };
 
   return(
     <>
