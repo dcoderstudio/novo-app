@@ -282,10 +282,9 @@ function RutaIcon({idx,lit}){
   );
   return null;
 }
-function RutaAccionDiagram(){
-  const [cur,setCur]=useState(0);
+function RutaAccionDiagram({cur,setCur}){
   const [auto,setAuto]=useState(null);
-  const total=9;
+  const total=RUTA_STEPS.length;
   useEffect(()=>()=>{if(auto) clearInterval(auto);},[auto]);
   const startAuto=()=>{
     if(auto){clearInterval(auto);setAuto(null);return;}
@@ -346,9 +345,7 @@ function RutaAccionDiagram(){
         })}
       </svg>
       <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,marginTop:"1.2rem"}}>
-        <button style={{...btn(),opacity:cur===0?0.35:1}} onClick={()=>setCur(c=>Math.max(0,c-1))}>← Anterior</button>
         <span style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:800,minWidth:44,textAlign:"center"}}>{cur} / {total}</span>
-        <button style={{...btn("pri"),opacity:cur===total?0.35:1}} onClick={()=>setCur(c=>Math.min(total,c+1))}>Siguiente →</button>
         <button style={btn()} onClick={startAuto}>{auto?"⏸ Pausar":"▶ Auto"}</button>
       </div>
     </div>
@@ -601,18 +598,34 @@ export default function App(){
     descubrimientos.forEach((_,i)=>HISTORIA_PAGES.push({type:"descubrimientos",i}));
     proyecciones.forEach((_,i)=>HISTORIA_PAGES.push({type:"proyecciones",i}));
     const curIdx=Math.max(0,Math.min(slideIdx,HISTORIA_PAGES.length-1));
-    const goTo=i=>setSlideIdx(Math.max(0,Math.min(HISTORIA_PAGES.length-1,i)));
+    const [rutaStep,setRutaStep]=useState(0);
+    const goTo=i=>{
+      const idx=Math.max(0,Math.min(HISTORIA_PAGES.length-1,i));
+      if(HISTORIA_PAGES[idx].type==="ruta-accion") setRutaStep(0);
+      setSlideIdx(idx);
+    };
+    const navigate=dir=>{
+      const cur=HISTORIA_PAGES[curIdx];
+      if(cur.type==="ruta-accion"){
+        if(dir>0&&rutaStep<RUTA_STEPS.length){setRutaStep(s=>s+1);return;}
+        if(dir<0&&rutaStep>0){setRutaStep(s=>s-1);return;}
+      }
+      const nextIdx=curIdx+dir;
+      if(nextIdx<0||nextIdx>HISTORIA_PAGES.length-1) return;
+      if(HISTORIA_PAGES[nextIdx].type==="ruta-accion") setRutaStep(dir>0?0:RUTA_STEPS.length);
+      setSlideIdx(nextIdx);
+    };
 
     useEffect(()=>{
       if(!showHistoria) return;
       const handler=e=>{
-        if(e.key==="ArrowRight"){e.preventDefault();goTo(curIdx+1);}
-        else if(e.key==="ArrowLeft"){e.preventDefault();goTo(curIdx-1);}
+        if(e.key==="ArrowRight"){e.preventDefault();navigate(1);}
+        else if(e.key==="ArrowLeft"){e.preventDefault();navigate(-1);}
         else if(e.key==="Escape"){setShowHistoria(false);setSlideIdx(0);}
       };
       window.addEventListener("keydown",handler);
       return ()=>window.removeEventListener("keydown",handler);
-    },[showHistoria,curIdx,HISTORIA_PAGES.length]);
+    },[showHistoria,curIdx,rutaStep,HISTORIA_PAGES.length]);
 
     if(!showHistoria) return null;
     const close=()=>{setShowHistoria(false);setSlideIdx(0);};
@@ -624,9 +637,11 @@ export default function App(){
       proyecciones:{titulo:"Proyecciones a futuro",subtitulo:"Lo que viene",items:proyecciones,setItems:setProyecciones},
     };
     const navBtn=(dir)=>{
-      const disabled=dir<0?curIdx===0:curIdx===HISTORIA_PAGES.length-1;
+      const atEdge=dir<0?curIdx===0:curIdx===HISTORIA_PAGES.length-1;
+      const midRuta=page.type==="ruta-accion"&&(dir<0?rutaStep>0:rutaStep<RUTA_STEPS.length);
+      const disabled=atEdge&&!midRuta;
       return(
-        <button className="hist-nav-btn" onClick={()=>goTo(curIdx+dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
+        <button className="hist-nav-btn" onClick={()=>navigate(dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
       );
     };
     return(
@@ -678,7 +693,7 @@ export default function App(){
           })()}
           {page.type==="ruta-accion"&&(
             <div style={{maxWidth:760,width:"100%"}}>
-              <RutaAccionDiagram/>
+              <RutaAccionDiagram cur={rutaStep} setCur={setRutaStep}/>
             </div>
           )}
           {page.type==="proyecto"&&(
