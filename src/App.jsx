@@ -627,6 +627,12 @@ export default function App(){
       return ()=>window.removeEventListener("keydown",handler);
     },[showHistoria,curIdx,rutaStep,HISTORIA_PAGES.length]);
 
+    useEffect(()=>{
+      if(!showHistoria) return;
+      document.body.style.background=G_HERO;
+      return ()=>{document.body.style.background="";};
+    },[showHistoria]);
+
     if(!showHistoria) return null;
     const close=()=>{setShowHistoria(false);setSlideIdx(0);};
     const sortedRecs=[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha));
