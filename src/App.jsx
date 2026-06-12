@@ -63,12 +63,32 @@ const RECEPCIONES_INIT=[
   {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya, 200 llaveros (8kg), 22 reconocimientos (22kg)",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar",desglose:[{cantidad:1400,descripcion:"350 organizadores Sogoya",estado:"En Placas"},{cantidad:8,descripcion:"200 llaveros",estado:"Transformado"},{cantidad:22,descripcion:"22 reconocimientos",estado:"Transformado"},{cantidad:370,descripcion:"Excedente disponible para transformar",estado:"En Placas"}]},
 ];
 const PEDIDOS_INIT=[
-  {id:1,nombre:"700 Artículos varios",cliente:"Novo Nordisk",kgReq:520,kgDisponible:true,fechaEst:"2026-08-30",etapa:2,cotizacion:"",oc:"",obs:"Destinado al material molido de Feb 2026"},
+  {id:1,nombre:"700 Artículos varios",cliente:"Novo Nordisk",kgReq:520,kgDisponible:true,fechaEst:"2026-08-30",etapa:3,cotizacion:"",oc:"",obs:"Destinado al material molido de Feb 2026"},
+];
+const PROYECTOS_INIT=[
+  {id:1,nombre:"2 Mesas",kg:28,etapa:6,fecha:"2024-09-30"},
+  {id:2,nombre:"2 Macetas",kg:18,etapa:6,fecha:"2024-09-30"},
+  {id:3,nombre:"2 Bancos",kg:14,etapa:6,fecha:"2024-09-30"},
+  {id:4,nombre:"8 Logotipos",kg:56,etapa:6,fecha:"2024-09-30"},
+  {id:5,nombre:"Molidos y entregados a Universum",kg:4,etapa:6,fecha:"2024-11-04"},
+  {id:6,nombre:"Reparación de piezas",kg:36,etapa:6,fecha:"2024-11-04"},
+  {id:7,nombre:"8 Bancos altos",kg:170,etapa:6,fecha:"2024-11-12"},
+  {id:8,nombre:"Mural",kg:30,etapa:6,fecha:"2024-11-12"},
+  {id:9,nombre:"Logo grande",kg:15,etapa:6,fecha:"2024-11-12"},
+  {id:10,nombre:"Complemento entrega anterior",kg:32,etapa:6,fecha:"2024-11-10"},
+  {id:11,nombre:"Bases para trofeos",kg:18,etapa:6,fecha:"2024-11-10"},
+  {id:12,nombre:"Fabricación de contenedor",kg:31,etapa:6,fecha:"2025-10-02"},
+  {id:13,nombre:"Restauración de contenedor",kg:9,etapa:6,fecha:"2025-10-02"},
+  {id:14,nombre:"17 Invitaciones ISTH",kg:48,etapa:6,fecha:"2026-05-04"},
+  {id:15,nombre:"350 organizadores Sogoya",kg:1400,etapa:3,fecha:"2026-05-04"},
+  {id:16,nombre:"200 llaveros",kg:8,etapa:6,fecha:"2026-05-04"},
+  {id:17,nombre:"22 reconocimientos",kg:22,etapa:6,fecha:"2026-05-04"},
+  {id:18,nombre:"Excedente disponible para transformar",kg:370,etapa:3,fecha:"2026-05-04"},
 ];
 const HISTORICO_FULL=[
   {mes:"Sep 24",kg:120},{mes:"Oct 24",kg:0},{mes:"Nov 24",kg:264},{mes:"Dic 24",kg:0},
   {mes:"Ene 25",kg:0},{mes:"Feb 25",kg:0},{mes:"Mar 25",kg:0},{mes:"Abr 25",kg:0},{mes:"May 25",kg:0},{mes:"Jun 25",kg:0},{mes:"Jul 25",kg:0},{mes:"Ago 25",kg:0},{mes:"Sep 25",kg:0},{mes:"Oct 25",kg:40},{mes:"Nov 25",kg:0},{mes:"Dic 25",kg:0},
-  {mes:"Ene 26",kg:0},{mes:"Feb 26",kg:521.4},{mes:"Mar 26",kg:0},{mes:"Abr 26",kg:0},{mes:"May 26",kg:0},
+  {mes:"Ene 26",kg:0},{mes:"Feb 26",kg:521.4},{mes:"Mar 26",kg:0},{mes:"Abr 26",kg:0},{mes:"May 26",kg:1848},
 ];
 const DETALLE_INIT={
   Mobiliario:[
@@ -92,6 +112,9 @@ function EstadoBadge({estado}){
   const map={Transformado:{bg:GREEN_BG,c:GREEN},Molido:{bg:BLUE_L,c:BLUE},"En Stock":{bg:"#FEF9C3",c:"#A16207"},"En Placas":{bg:"#EDE9FE",c:"#7C3AED"}};
   const s=map[estado]||{bg:BG,c:MUTED};
   return <span style={{background:s.bg,color:s.c,borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700,whiteSpace:"nowrap"}}>{estado}</span>;
+}
+function EtapaBadge({i}){
+  return <span style={{display:"inline-flex",alignItems:"center",gap:4,background:BLUE_L,color:BLUE,borderRadius:20,padding:"3px 9px",fontSize:10,fontWeight:700,whiteSpace:"nowrap"}}>{ETAPA_ICONS[i]} {ETAPAS[i]}</span>;
 }
 function EditBtn({onClick}){return <button onClick={onClick} title="Editar" style={{background:BLUE_L,color:BLUE,border:"none",borderRadius:6,width:28,height:28,cursor:"pointer",fontSize:13,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✏️</button>;}
 function SaveBtn({onClick}){return <button onClick={onClick} style={{background:BLUE,color:WHITE,border:"none",borderRadius:6,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer"}}>Guardar</button>;}
@@ -143,6 +166,13 @@ export default function App(){
   const [editPedData,setEditPedData]=useState(null);
   const [showNewPed,setShowNewPed]=useState(false);
   const [newPedData,setNewPedData]=useState({nombre:"",cliente:"Novo Nordisk",kgReq:"",kgDisponible:false,fechaEst:"",etapa:0,cotizacion:"",oc:"",obs:""});
+  const [proyectos,setProyectos]=useState(PROYECTOS_INIT);
+  const [editProyId,setEditProyId]=useState(null);
+  const [editProyData,setEditProyData]=useState(null);
+  const [showNewProy,setShowNewProy]=useState(false);
+  const [newProyData,setNewProyData]=useState({nombre:"",kg:"",etapa:0,fecha:""});
+  const [dragInfo,setDragInfo]=useState(null);
+  const [dragOverEtapa,setDragOverEtapa]=useState(null);
   const [editMeta,setEditMeta]=useState(false);
   const [editPiezaId,setEditPiezaId]=useState(null);
   const [editPiezaData,setEditPiezaData]=useState(null);
@@ -194,7 +224,7 @@ export default function App(){
   const acColor=yrFilter==="2025"?BLUE2:yrFilter==="2026"?GREEN:BLUE;
   const acGrad=yrFilter==="2025"?"linear-gradient(135deg,#1A5FA8,#2176C2)":yrFilter==="2026"?G_GREEN:G_BLUE;
 
-  const exitAdmin=()=>{setIsAdmin(false);setEditRecId(null);setEditPedId(null);setShowNewRec(false);setShowNewPed(false);setEditMeta(false);};
+  const exitAdmin=()=>{setIsAdmin(false);setEditRecId(null);setEditPedId(null);setShowNewRec(false);setShowNewPed(false);setEditProyId(null);setShowNewProy(false);setEditMeta(false);};
 
   const saveRec=(d)=>{
     if(d.id) setRecs(rs=>rs.map(r=>r.id===d.id?{...d,kgBruto:Number(d.kgBruto),kgReal:Number(d.kgReal)}:r));
@@ -213,7 +243,32 @@ export default function App(){
     setEditPedId(null);setShowNewPed(false);setNewPedData({nombre:"",cliente:"Novo Nordisk",kgReq:"",kgDisponible:false,fechaEst:"",etapa:0,cotizacion:"",oc:"",obs:""});
   };
   const delPed=(id)=>setPedidos(ps=>ps.filter(p=>p.id!==id));
-  const movePed=(id,dir)=>setPedidos(ps=>ps.map(p=>p.id===id?{...p,etapa:Math.min(ETAPAS.length-1,Math.max(0,p.etapa+dir))}:p));
+
+  const saveProy=(d)=>{
+    if(d.id) setProyectos(ps=>ps.map(p=>p.id===d.id?{...d,kg:Number(d.kg),etapa:Number(d.etapa)}:p));
+    else{const id=Math.max(0,...proyectos.map(p=>p.id))+1;setProyectos(ps=>[...ps,{...d,id,kg:Number(d.kg),etapa:Number(d.etapa)}]);}
+    setEditProyId(null);setShowNewProy(false);setNewProyData({nombre:"",kg:"",etapa:0,fecha:""});
+  };
+  const delProy=(id)=>setProyectos(ps=>ps.filter(p=>p.id!==id));
+
+  const onCardDragStart=(board,id)=>e=>{setDragInfo({board,id});e.dataTransfer.effectAllowed="move";};
+  const onCardDragEnd=()=>{setDragInfo(null);setDragOverEtapa(null);};
+  const onColDragOver=(board,etapa)=>e=>{
+    if(!dragInfo||dragInfo.board!==board) return;
+    e.preventDefault();
+    setDragOverEtapa(o=>(o&&o.board===board&&o.etapa===etapa)?o:{board,etapa});
+  };
+  const onColDragLeave=(board,etapa)=>e=>{
+    if(e.currentTarget.contains(e.relatedTarget)) return;
+    setDragOverEtapa(o=>(o&&o.board===board&&o.etapa===etapa)?null:o);
+  };
+  const onColDrop=(board,etapa)=>e=>{
+    e.preventDefault();
+    if(!dragInfo||dragInfo.board!==board) return;
+    if(board==="ped") setPedidos(ps=>ps.map(p=>p.id===dragInfo.id?{...p,etapa}:p));
+    else setProyectos(ps=>ps.map(p=>p.id===dragInfo.id?{...p,etapa}:p));
+    setDragInfo(null);setDragOverEtapa(null);
+  };
 
   const savePieza=(cat,d)=>{
     setDetalle(prev=>{
@@ -274,6 +329,23 @@ export default function App(){
       </div>
       <div style={{marginBottom:10}}><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>Observaciones</div>
         <textarea style={{...inpSm,resize:"vertical",minHeight:40,width:"100%"}} value={data.obs} onChange={e=>onChange({...data,obs:e.target.value})}/></div>
+      <div style={{display:"flex",gap:6}}><SaveBtn onClick={()=>onSave(data)}/><CancelBtn onClick={onCancel}/></div>
+    </div>
+  );
+
+  const ProyInlineForm=({data,onChange,onSave,onCancel})=>(
+    <div style={{background:BLUE_L,borderRadius:12,padding:"1rem",border:`1.5px solid ${BLUE}`,marginBottom:8}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:8,marginBottom:10}}>
+        {[["Proyecto / pieza","text","nombre"],["KG","number","kg"],["Fecha origen","date","fecha"]].map(([lbl,type,key])=>(
+          <div key={key}><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>{lbl}</div>
+          <input style={inpSm} type={type} value={data[key]} onChange={e=>onChange({...data,[key]:e.target.value})}/></div>
+        ))}
+        <div><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>Etapa</div>
+          <select style={inpSm} value={data.etapa} onChange={e=>onChange({...data,etapa:Number(e.target.value)})}>
+            {ETAPAS.map((e,i)=><option key={i} value={i}>{ETAPA_ICONS[i]} {e}</option>)}
+          </select>
+        </div>
+      </div>
       <div style={{display:"flex",gap:6}}><SaveBtn onClick={()=>onSave(data)}/><CancelBtn onClick={onCancel}/></div>
     </div>
   );
@@ -686,6 +758,7 @@ export default function App(){
 
           {tab==="pipeline"&&(
             <>
+              {isAdmin&&<div style={{background:BLUE_L,color:BLUE,borderRadius:10,padding:"8px 14px",fontSize:11,fontWeight:700,marginBottom:16}}>⠿ Arrastra una ficha y suéltala en la fase donde quedaría</div>}
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:12}}>
                 <div>
                   <div style={{fontSize:24,fontWeight:900,color:TEXT,marginBottom:4}}>Pipeline de pedidos</div>
@@ -695,12 +768,14 @@ export default function App(){
               </div>
               {isAdmin&&showNewPed&&<PedInlineForm data={newPedData} onChange={setNewPedData} onSave={savePed} onCancel={()=>setShowNewPed(false)}/>}
               {pedidos.length===0&&!showNewPed&&<div style={{background:WHITE,borderRadius:16,padding:"3rem",textAlign:"center",border:`1.5px dashed ${BORDER}`}}><div style={{fontSize:32,marginBottom:8}}>📋</div><div style={{fontSize:14,color:MUTED,fontWeight:600}}>No hay pedidos aún</div></div>}
-              <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8}}>
+              <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8,marginBottom:32}}>
                 {ETAPAS.map((etapa,i)=>{
                   const lotes=pedidos.filter(p=>p.etapa===i);
                   const active=lotes.length>0;
+                  const over=dragOverEtapa?.board==="ped"&&dragOverEtapa.etapa===i;
                   return(
-                    <div key={i} style={{minWidth:170,flex:"0 0 auto"}}>
+                    <div key={i} onDragOver={onColDragOver("ped",i)} onDragLeave={onColDragLeave("ped",i)} onDrop={onColDrop("ped",i)}
+                      style={{minWidth:170,flex:"0 0 auto",borderRadius:12,border:`2px dashed ${over?BLUE:"transparent"}`,background:over?BLUE_L:"transparent",padding:4,transition:"background 0.15s,border-color 0.15s"}}>
                       <div style={{background:active?G_BLUE:BG,borderRadius:10,padding:"10px 12px",marginBottom:10,border:active?"none":`1px solid ${BORDER}`}}>
                         <div style={{fontSize:14,marginBottom:2}}>{ETAPA_ICONS[i]}</div>
                         <div style={{fontSize:11,fontWeight:800,color:active?WHITE:MUTED}}>{etapa}</div>
@@ -709,7 +784,8 @@ export default function App(){
                       {lotes.map(p=>(
                         editPedId===p.id
                           ?<div key={p.id} style={{marginBottom:8}}><PedInlineForm data={editPedData} onChange={setEditPedData} onSave={savePed} onCancel={()=>setEditPedId(null)}/></div>
-                          :<div key={p.id} style={{background:G_CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px",marginBottom:8,position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
+                          :<div key={p.id} draggable={isAdmin} onDragStart={onCardDragStart("ped",p.id)} onDragEnd={onCardDragEnd}
+                              style={{background:G_CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px",marginBottom:8,position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)",cursor:isAdmin?"grab":"default",opacity:dragInfo?.board==="ped"&&dragInfo.id===p.id?0.4:1}}>
                             {isAdmin&&<div style={{position:"absolute",top:8,right:8,display:"flex",gap:4}}><EditBtn onClick={()=>{setEditPedId(p.id);setEditPedData({...p});}}/><DelBtn onClick={()=>delPed(p.id)}/></div>}
                             <div style={{fontSize:12,fontWeight:800,color:TEXT,marginBottom:4,paddingRight:isAdmin?60:0}}>{p.nombre}</div>
                             <div style={{fontSize:11,color:MUTED,fontWeight:600,marginBottom:4}}>{p.cliente}</div>
@@ -722,17 +798,62 @@ export default function App(){
                             </div>
                             {p.fechaEst&&<div style={{fontSize:10,color:MUTED,fontWeight:600,marginBottom:4}}>📅 {p.fechaEst}</div>}
                             {p.obs&&<div style={{fontSize:10,color:MUTED,marginBottom:6,lineHeight:1.4}}>{p.obs}</div>}
-                            <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
+                            <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:8}}>
                               {p.cotizacion&&<span style={{background:BLUE_L,color:BLUE,borderRadius:6,padding:"2px 8px",fontSize:10,fontWeight:700}}>📄 Cot.</span>}
                               {p.oc&&<span style={{background:GREEN_BG,color:GREEN,borderRadius:6,padding:"2px 8px",fontSize:10,fontWeight:700}}>📋 OC</span>}
                             </div>
-                            {isAdmin&&<div style={{display:"flex",gap:4,marginTop:8,borderTop:`1px solid ${BORDER}`,paddingTop:8}}>
-                              <button onClick={()=>movePed(p.id,-1)} disabled={p.etapa===0} style={{flex:1,background:p.etapa===0?"#F0F2F7":BLUE_L,color:p.etapa===0?MUTED:BLUE,border:"none",borderRadius:6,padding:"4px",fontWeight:700,cursor:p.etapa===0?"default":"pointer",fontSize:11,opacity:p.etapa===0?0.5:1}}>← Atrás</button>
-                              <button onClick={()=>movePed(p.id,1)} disabled={p.etapa===ETAPAS.length-1} style={{flex:1,background:p.etapa===ETAPAS.length-1?"#F0F2F7":BLUE_L,color:p.etapa===ETAPAS.length-1?MUTED:BLUE,border:"none",borderRadius:6,padding:"4px",fontWeight:700,cursor:p.etapa===ETAPAS.length-1?"default":"pointer",fontSize:11,opacity:p.etapa===ETAPAS.length-1?0.5:1}}>Avanzar →</button>
-                            </div>}
+                            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,borderTop:`1px solid ${BORDER}`,paddingTop:8}}>
+                              <EtapaBadge i={p.etapa}/>
+                              {isAdmin&&<span style={{fontSize:10,color:MUTED,fontWeight:600}}>⠿ arrastra</span>}
+                            </div>
                           </div>
                       ))}
                       {lotes.length===0&&<div style={{background:WHITE,border:`1.5px dashed ${BORDER}`,borderRadius:10,padding:"14px 12px",textAlign:"center"}}><div style={{fontSize:10,color:MUTED,fontWeight:600}}>Sin pedidos</div></div>}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:12}}>
+                <div>
+                  <div style={{fontSize:24,fontWeight:900,color:TEXT,marginBottom:4}}>Proyectos de transformación</div>
+                  <div style={{fontSize:14,color:MUTED,fontWeight:500}}>{proyectos.length} proyecto{proyectos.length!==1?"s":""} generado{proyectos.length!==1?"s":""} a partir del material recibido</div>
+                </div>
+                {isAdmin&&<button style={{background:G_BLUE,color:WHITE,border:"none",borderRadius:10,padding:"9px 18px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>{setShowNewProy(true);setEditProyId(null);}}>+ Nuevo proyecto</button>}
+              </div>
+              {isAdmin&&showNewProy&&<ProyInlineForm data={newProyData} onChange={setNewProyData} onSave={saveProy} onCancel={()=>setShowNewProy(false)}/>}
+              {proyectos.length===0&&!showNewProy&&<div style={{background:WHITE,borderRadius:16,padding:"3rem",textAlign:"center",border:`1.5px dashed ${BORDER}`}}><div style={{fontSize:32,marginBottom:8}}>🧩</div><div style={{fontSize:14,color:MUTED,fontWeight:600}}>No hay proyectos aún</div></div>}
+              <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8}}>
+                {ETAPAS.map((etapa,i)=>{
+                  const items=proyectos.filter(p=>p.etapa===i);
+                  const active=items.length>0;
+                  const over=dragOverEtapa?.board==="proy"&&dragOverEtapa.etapa===i;
+                  return(
+                    <div key={i} onDragOver={onColDragOver("proy",i)} onDragLeave={onColDragLeave("proy",i)} onDrop={onColDrop("proy",i)}
+                      style={{minWidth:170,flex:"0 0 auto",borderRadius:12,border:`2px dashed ${over?BLUE:"transparent"}`,background:over?BLUE_L:"transparent",padding:4,transition:"background 0.15s,border-color 0.15s"}}>
+                      <div style={{background:active?G_BLUE:BG,borderRadius:10,padding:"10px 12px",marginBottom:10,border:active?"none":`1px solid ${BORDER}`}}>
+                        <div style={{fontSize:14,marginBottom:2}}>{ETAPA_ICONS[i]}</div>
+                        <div style={{fontSize:11,fontWeight:800,color:active?WHITE:MUTED}}>{etapa}</div>
+                        {active&&<div style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600,marginTop:1}}>{items.length} proyecto{items.length>1?"s":""}</div>}
+                      </div>
+                      {items.map(p=>(
+                        editProyId===p.id
+                          ?<div key={p.id} style={{marginBottom:8}}><ProyInlineForm data={editProyData} onChange={setEditProyData} onSave={saveProy} onCancel={()=>setEditProyId(null)}/></div>
+                          :<div key={p.id} draggable={isAdmin} onDragStart={onCardDragStart("proy",p.id)} onDragEnd={onCardDragEnd}
+                              style={{background:G_CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px",marginBottom:8,position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)",cursor:isAdmin?"grab":"default",opacity:dragInfo?.board==="proy"&&dragInfo.id===p.id?0.4:1}}>
+                            {isAdmin&&<div style={{position:"absolute",top:8,right:8,display:"flex",gap:4}}><EditBtn onClick={()=>{setEditProyId(p.id);setEditProyData({...p});}}/><DelBtn onClick={()=>delProy(p.id)}/></div>}
+                            <div style={{fontSize:12,fontWeight:800,color:TEXT,marginBottom:6,paddingRight:isAdmin?60:0}}>{p.nombre}</div>
+                            <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:8}}>
+                              <span style={{fontSize:18,fontWeight:900,color:BLUE}}>{fmt(p.kg)}</span>
+                              <span style={{fontSize:10,color:MUTED,fontWeight:600}}>kg</span>
+                            </div>
+                            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,flexWrap:"wrap",borderTop:`1px solid ${BORDER}`,paddingTop:8}}>
+                              <EtapaBadge i={p.etapa}/>
+                              {p.fecha&&<span style={{fontSize:10,color:MUTED,fontWeight:600}}>📅 {p.fecha}</span>}
+                            </div>
+                          </div>
+                      ))}
+                      {items.length===0&&<div style={{background:WHITE,border:`1.5px dashed ${BORDER}`,borderRadius:10,padding:"14px 12px",textAlign:"center"}}><div style={{fontSize:10,color:MUTED,fontWeight:600}}>Sin proyectos</div></div>}
                     </div>
                   );
                 })}
