@@ -269,6 +269,10 @@ export default function App(){
 
           {tab==="inicio"&&(
             <>
+              <div style={{marginBottom:20}}>
+                <div style={{fontSize:24,fontWeight:900,color:TEXT,marginBottom:4}}>Waste Into Value</div>
+                <div style={{fontSize:14,color:MUTED,fontWeight:500}}>Programa de Economía Circular — Novo Nordisk</div>
+              </div>
               <div style={{background:G_HERO,borderRadius:20,padding:"2rem",marginBottom:20,position:"relative",overflow:"hidden"}}>
                 <div style={{position:"absolute",right:-40,top:-40,width:260,height:260,background:"rgba(255,255,255,0.06)",borderRadius:"50%"}}/>
                 <div style={{position:"absolute",right:90,bottom:-80,width:340,height:340,background:"rgba(255,255,255,0.04)",borderRadius:"50%"}}/>
