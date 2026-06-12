@@ -51,16 +51,16 @@ input,select,textarea{font-family:'Montserrat',sans-serif;}
 .hist-dot:hover{background:rgba(255,255,255,0.5)!important;}`;
 
 const RECEPCIONES_INIT=[
-  {id:1,fecha:"2024-09-30",kgBruto:150,kgReal:120,estado:"Transformado",transformadoEn:"2 Mesas (28kg), 2 Macetas (18kg), 2 Bancos (14kg), 8 Logotipos (56kg)",obs:"Primer entrega"},
-  {id:2,fecha:"2024-11-04",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Molidos y entregados a Universum (4kg), Reparación de piezas",obs:""},
-  {id:3,fecha:"2024-11-12",kgBruto:230,kgReal:184,estado:"Transformado",transformadoEn:"8 Bancos altos (170kg), Mural (30kg), Logo grande (15kg)",obs:"Segunda entrega"},
-  {id:4,fecha:"2024-11-08",kgBruto:50,kgReal:0,estado:"En Stock",transformadoEn:"",obs:"Material flexible de otro plástico"},
-  {id:5,fecha:"2024-11-10",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Complemento entrega anterior (32kg), Bases para trofeos (18kg)",obs:"El resto se utilizó con polvo de molienda"},
-  {id:6,fecha:"2025-10-02",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Fabricación de contenedor (31kg), Restauración de contenedor",obs:"Tenemos plástico recuperado del sobrante"},
-  {id:7,fecha:"2026-02-17",kgBruto:650,kgReal:520,estado:"Molido",transformadoEn:"",obs:"Destinado a fabricación de 700 piezas"},
-  {id:8,fecha:"2026-02-23",kgBruto:1.75,kgReal:1.4,estado:"En Stock",transformadoEn:"",obs:""},
-  {id:9,fecha:"2026-05-04",kgBruto:60,kgReal:48,estado:"Transformado",transformadoEn:"17 Invitaciones ISTH",obs:""},
-  {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar"},
+  {id:1,fecha:"2024-09-30",kgBruto:150,kgReal:120,estado:"Transformado",transformadoEn:"2 Mesas (28kg), 2 Macetas (18kg), 2 Bancos (14kg), 8 Logotipos (56kg)",obs:"Primer entrega",desglose:[{cantidad:28,descripcion:"2 Mesas"},{cantidad:18,descripcion:"2 Macetas"},{cantidad:14,descripcion:"2 Bancos"},{cantidad:56,descripcion:"8 Logotipos"}]},
+  {id:2,fecha:"2024-11-04",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Molidos y entregados a Universum (4kg), Reparación de piezas",obs:"",desglose:[{cantidad:4,descripcion:"Molidos y entregados a Universum"},{cantidad:36,descripcion:"Reparación de piezas"}]},
+  {id:3,fecha:"2024-11-12",kgBruto:230,kgReal:184,estado:"Transformado",transformadoEn:"8 Bancos altos (170kg), Mural (30kg), Logo grande (15kg)",obs:"Segunda entrega",desglose:[{cantidad:170,descripcion:"8 Bancos altos"},{cantidad:30,descripcion:"Mural"},{cantidad:15,descripcion:"Logo grande"}]},
+  {id:4,fecha:"2024-11-08",kgBruto:50,kgReal:0,estado:"En Stock",transformadoEn:"",obs:"Material flexible de otro plástico",desglose:[]},
+  {id:5,fecha:"2024-11-10",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Complemento entrega anterior (32kg), Bases para trofeos (18kg)",obs:"El resto se utilizó con polvo de molienda",desglose:[{cantidad:32,descripcion:"Complemento entrega anterior"},{cantidad:18,descripcion:"Bases para trofeos"}]},
+  {id:6,fecha:"2025-10-02",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Fabricación de contenedor (31kg), Restauración de contenedor",obs:"Tenemos plástico recuperado del sobrante",desglose:[{cantidad:31,descripcion:"Fabricación de contenedor"},{cantidad:9,descripcion:"Restauración de contenedor"}]},
+  {id:7,fecha:"2026-02-17",kgBruto:650,kgReal:520,estado:"Molido",transformadoEn:"",obs:"Destinado a fabricación de 700 piezas",desglose:[]},
+  {id:8,fecha:"2026-02-23",kgBruto:1.75,kgReal:1.4,estado:"En Stock",transformadoEn:"",obs:"",desglose:[]},
+  {id:9,fecha:"2026-05-04",kgBruto:60,kgReal:48,estado:"Transformado",transformadoEn:"17 Invitaciones ISTH",obs:"",desglose:[{cantidad:48,descripcion:"17 Invitaciones ISTH"}]},
+  {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar",desglose:[{cantidad:1400,descripcion:"350 organizadores Sogoya"},{cantidad:400,descripcion:"Excedente disponible para transformar"}]},
 ];
 const PEDIDOS_INIT=[
   {id:1,nombre:"700 Artículos varios",cliente:"Novo Nordisk",kgReq:520,kgDisponible:true,fechaEst:"2026-08-30",etapa:2,cotizacion:"",oc:"",obs:"Destinado al material molido de Feb 2026"},
@@ -133,6 +133,7 @@ export default function App(){
   const [yrFilter,setYrFilter]=useState("Todo");
   const [isAdmin,setIsAdmin]=useState(false);
   const [piezaTab,setPiezaTab]=useState(null);
+  const [openRecs,setOpenRecs]=useState([]);
   const [editRecId,setEditRecId]=useState(null);
   const [editRecData,setEditRecData]=useState(null);
   const [showNewRec,setShowNewRec]=useState(false);
@@ -197,6 +198,10 @@ export default function App(){
     setEditRecId(null);setShowNewRec(false);setNewRecData({fecha:"",kgBruto:"",kgReal:"",estado:"En Stock",transformadoEn:"",obs:""});
   };
   const delRec=(id)=>setRecs(rs=>rs.filter(r=>r.id!==id));
+  const toggleRec=(id)=>setOpenRecs(o=>o.includes(id)?o.filter(x=>x!==id):[...o,id]);
+  const addDesglose=(id)=>setRecs(rs=>rs.map(r=>r.id===id?{...r,desglose:[...(r.desglose||[]),{cantidad:0,descripcion:""}]}:r));
+  const updDesglose=(id,idx,field,val)=>setRecs(rs=>rs.map(r=>r.id===id?{...r,desglose:r.desglose.map((d,j)=>j===idx?{...d,[field]:val}:d)}:r));
+  const delDesglose=(id,idx)=>setRecs(rs=>rs.map(r=>r.id===id?{...r,desglose:r.desglose.filter((_,j)=>j!==idx)}:r));
 
   const savePed=(d)=>{
     if(d.id) setPedidos(ps=>ps.map(p=>p.id===d.id?{...d,kgReq:Number(d.kgReq),etapa:Number(d.etapa)}:p));
@@ -586,14 +591,22 @@ export default function App(){
               <div style={{background:WHITE,borderRadius:16,border:`1px solid ${BORDER}`,overflow:"auto",marginBottom:16}}>
                 <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
                   <thead><tr style={{background:BG}}>
-                    {["Fecha","KG Brutos","KG Reales","Estado","Transformado en","Observaciones",...(isAdmin?[""]:[])].map(h=>(
-                      <th key={h} style={{textAlign:"left",padding:"10px 14px",color:MUTED,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:0.8,whiteSpace:"nowrap"}}>{h}</th>
+                    {["","Fecha","KG Brutos","KG Reales","Estado","Transformado en","Observaciones",...(isAdmin?[""]:[])].map((h,hi)=>(
+                      <th key={h+hi} style={{textAlign:"left",padding:"10px 14px",color:MUTED,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:0.8,whiteSpace:"nowrap"}}>{h}</th>
                     ))}
                   </tr></thead>
-                  <tbody>{[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha)).map((r,i)=>(
-                    editRecId===r.id
-                      ?<tr key={r.id}><td colSpan={isAdmin?7:6} style={{padding:"8px 14px"}}><RecInlineForm data={editRecData} onChange={setEditRecData} onSave={saveRec} onCancel={()=>setEditRecId(null)}/></td></tr>
-                      :<tr key={r.id} style={{borderTop:`1px solid ${BORDER}`,background:i%2===0?WHITE:"#FAFBFD"}}>
+                  <tbody>{[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha)).map((r,i)=>{
+                    if(editRecId===r.id) return <tr key={r.id}><td colSpan={isAdmin?8:7} style={{padding:"8px 14px"}}><RecInlineForm data={editRecData} onChange={setEditRecData} onSave={saveRec} onCancel={()=>setEditRecId(null)}/></td></tr>;
+                    const open=openRecs.includes(r.id);
+                    const usado=(r.desglose||[]).reduce((s,d)=>s+Number(d.cantidad||0),0);
+                    const restante=Number(r.kgReal)-usado;
+                    const rows=[
+                      <tr key={r.id} style={{borderTop:`1px solid ${BORDER}`,background:i%2===0?WHITE:"#FAFBFD"}}>
+                        <td style={{padding:"11px 6px",textAlign:"center"}}>
+                          <button onClick={()=>toggleRec(r.id)} title="Ver desglose" style={{background:"none",border:"none",cursor:"pointer",fontSize:12,color:MUTED,padding:2}}>
+                            <span style={{display:"inline-block",transform:open?"rotate(90deg)":"rotate(0deg)",transition:"transform 0.15s"}}>▸</span>
+                          </button>
+                        </td>
                         <td style={{padding:"11px 14px",fontWeight:800,whiteSpace:"nowrap"}}>{r.fecha}</td>
                         <td style={{padding:"11px 14px",color:MUTED,fontWeight:600,whiteSpace:"nowrap"}}>{fmt(r.kgBruto)} kg</td>
                         <td style={{padding:"11px 14px",whiteSpace:"nowrap"}}><span style={{fontSize:15,fontWeight:900,color:BLUE}}>{fmt(r.kgReal)}</span><span style={{fontSize:11,color:MUTED,fontWeight:600}}> kg</span></td>
@@ -602,7 +615,44 @@ export default function App(){
                         <td style={{padding:"11px 14px",fontSize:11,color:MUTED,maxWidth:180}}>{r.obs||"—"}</td>
                         {isAdmin&&<td style={{padding:"11px 14px"}}><div style={{display:"flex",gap:4}}><EditBtn onClick={()=>{setEditRecId(r.id);setEditRecData({...r});}}/><DelBtn onClick={()=>delRec(r.id)}/></div></td>}
                       </tr>
-                  ))}</tbody>
+                    ];
+                    if(open) rows.push(
+                      <tr key={`${r.id}-d`} style={{background:BLUE_L}}>
+                        <td colSpan={isAdmin?8:7} style={{padding:"14px 20px 18px 44px"}}>
+                          <div style={{fontSize:10,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Material real a transformar: {fmt(r.kgReal)} kg</div>
+                          <div style={{display:"flex",flexDirection:"column",gap:6,maxWidth:540}}>
+                            {(r.desglose||[]).map((d,j)=>(
+                              <div key={j} style={{display:"flex",alignItems:"center",gap:8,background:WHITE,borderRadius:8,padding:"6px 10px",border:`1px solid ${BORDER}`}}>
+                                {isAdmin
+                                  ?<>
+                                    <input type="number" value={d.cantidad} onChange={e=>updDesglose(r.id,j,"cantidad",e.target.value)} style={{...inpSm,width:70,flexShrink:0}}/>
+                                    <span style={{fontSize:11,color:MUTED,fontWeight:700,flexShrink:0}}>kg</span>
+                                    <input type="text" value={d.descripcion} onChange={e=>updDesglose(r.id,j,"descripcion",e.target.value)} style={{...inpSm,flex:1}} placeholder="¿En qué se usó?"/>
+                                    <DelBtn onClick={()=>delDesglose(r.id,j)}/>
+                                  </>
+                                  :<>
+                                    <span style={{fontSize:13,fontWeight:900,color:BLUE,minWidth:64,flexShrink:0}}>{fmt(d.cantidad)} kg</span>
+                                    <span style={{fontSize:12,color:TEXT,fontWeight:600}}>{d.descripcion||"—"}</span>
+                                  </>
+                                }
+                              </div>
+                            ))}
+                            {restante>0.001&&(
+                              <div style={{display:"flex",alignItems:"center",gap:8,padding:"6px 10px"}}>
+                                <span style={{fontSize:13,fontWeight:900,color:MUTED,minWidth:64}}>{fmt(restante)} kg</span>
+                                <span style={{fontSize:12,color:MUTED,fontStyle:"italic"}}>Sin especificar todavía</span>
+                              </div>
+                            )}
+                            {(r.desglose||[]).length===0&&restante<=0.001&&(
+                              <div style={{fontSize:12,color:MUTED,fontStyle:"italic"}}>Sin desglose registrado</div>
+                            )}
+                          </div>
+                          {isAdmin&&<button onClick={()=>addDesglose(r.id)} style={{marginTop:10,background:WHITE,border:`1px solid ${BLUE}`,color:BLUE,borderRadius:8,padding:"6px 14px",fontSize:11,fontWeight:700,cursor:"pointer"}}>+ Agregar destino</button>}
+                        </td>
+                      </tr>
+                    );
+                    return rows;
+                  })}</tbody>
                 </table>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
