@@ -21,9 +21,13 @@ const PIEZAS_HISTORIA=[
   {nombre:"Macetas",cantidad:2,icon:"🪴"},
   {nombre:"Logo de piso",cantidad:1,icon:"🏷️"},
   {nombre:"Logotipos para oficinas",cantidad:8,icon:"🔖"},
-  {nombre:"Reconocimientos",cantidad:76,icon:"🏆"},
+  {nombre:"Reconocimientos",cantidad:98,icon:"🏆"},
   {nombre:"Mural interactivo",cantidad:1,icon:"🖼️"},
   {nombre:"Bote de desechos electrónicos",cantidad:1,icon:"♻️"},
+  {nombre:"Contenedor de plumas",cantidad:1,icon:"🖊️"},
+  {nombre:"Contenedores pequeños",cantidad:3,icon:"📦"},
+  {nombre:"Invitaciones",cantidad:17,icon:"💌"},
+  {nombre:"Llaveros",cantidad:200,icon:"🔑"},
 ];
 const HISTORIA_SECTIONS=[
   {type:"intro",label:"Inicio"},
@@ -429,7 +433,7 @@ function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,t
               <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
               <div style={{fontSize:16,opacity:0.7,marginBottom:40,lineHeight:1.6,maxWidth:560,marginLeft:"auto",marginRight:"auto"}}>De residuo plástico a productos con propósito: este es el recorrido del proyecto desde su primera entrega hasta hoy.</div>
               <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,56px)",flexWrap:"wrap"}}>
-                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:"+150",l:"personas impactadas"},{v:`${pct}%`,l:"de la meta"}].map((s,i)=>(
+                {[{v:"+500kg",l:"transformados actualmente"},{v:"+2,000kg",l:"en proceso de transformación"},{v:"+150",l:"personas interactuando con las piezas"},{v:"+1000",l:"piezas en fabricación"},{v:"344",l:"piezas creadas"}].map((s,i)=>(
                   <div key={s.l} className="hist-stat" style={{animationDelay:`${0.15+i*0.1}s`}}>
                     <div style={{fontSize:"clamp(28px,5vw,44px)",fontWeight:900}}>{s.v}</div>
                     <div style={{fontSize:11,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
@@ -543,7 +547,7 @@ function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,t
           {page.type==="piezas"&&(
             <div style={{maxWidth:860,width:"100%",textAlign:"center"}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Lo que hemos creado</div>
-              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>101 piezas creadas</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>344 piezas creadas</div>
               <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>a partir de plástico reciclado · +500 kg transformados hasta ahora</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:14}}>
                 {PIEZAS_HISTORIA.map((p,i)=>(
@@ -883,7 +887,8 @@ export default function App(){
                   {label:"KG reales netos",val:fmt(totalReal),unit:"kg",grad:"linear-gradient(135deg,#1A5FA8,#2176C2)"},
                   {label:"Transformado - Entregado",val:fmt(transformadoKg),unit:"kg",grad:G_GREEN},
                   {label:"Recepciones",val:recs.length,unit:"lotes",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
-                  {label:"Pedidos activos",val:pedidos.filter(p=>p.etapa<6).length,unit:"en proceso",grad:G_GREEN},
+                  {label:"Piezas creadas",val:"344",unit:"piezas",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
+                  {label:"Proyectos activos",val:"2",unit:"en proceso",grad:G_GREEN},
                 ].map(k=>(
                   <div key={k.label} style={{background:k.grad,borderRadius:16,padding:"1.25rem",boxShadow:"0 4px 20px rgba(0,0,0,0.12)"}}>
                     <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{k.label}</div>
