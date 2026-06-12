@@ -51,16 +51,16 @@ input,select,textarea{font-family:'Montserrat',sans-serif;}
 .hist-dot:hover{background:rgba(255,255,255,0.5)!important;}`;
 
 const RECEPCIONES_INIT=[
-  {id:1,fecha:"2024-09-30",kgBruto:150,kgReal:120,estado:"Transformado",transformadoEn:"2 Mesas (28kg), 2 Macetas (18kg), 2 Bancos (14kg), 8 Logotipos (56kg)",obs:"Primer entrega",desglose:[{cantidad:28,descripcion:"2 Mesas"},{cantidad:18,descripcion:"2 Macetas"},{cantidad:14,descripcion:"2 Bancos"},{cantidad:56,descripcion:"8 Logotipos"}]},
-  {id:2,fecha:"2024-11-04",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Molidos y entregados a Universum (4kg), Reparación de piezas",obs:"",desglose:[{cantidad:4,descripcion:"Molidos y entregados a Universum"},{cantidad:36,descripcion:"Reparación de piezas"}]},
-  {id:3,fecha:"2024-11-12",kgBruto:230,kgReal:184,estado:"Transformado",transformadoEn:"8 Bancos altos (170kg), Mural (30kg), Logo grande (15kg)",obs:"Segunda entrega",desglose:[{cantidad:170,descripcion:"8 Bancos altos"},{cantidad:30,descripcion:"Mural"},{cantidad:15,descripcion:"Logo grande"}]},
+  {id:1,fecha:"2024-09-30",kgBruto:150,kgReal:120,estado:"Transformado",transformadoEn:"2 Mesas (28kg), 2 Macetas (18kg), 2 Bancos (14kg), 8 Logotipos (56kg)",obs:"Primer entrega",desglose:[{cantidad:28,descripcion:"2 Mesas",estado:"Transformado"},{cantidad:18,descripcion:"2 Macetas",estado:"Transformado"},{cantidad:14,descripcion:"2 Bancos",estado:"Transformado"},{cantidad:56,descripcion:"8 Logotipos",estado:"Transformado"}]},
+  {id:2,fecha:"2024-11-04",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Molidos y entregados a Universum (4kg), Reparación de piezas",obs:"",desglose:[{cantidad:4,descripcion:"Molidos y entregados a Universum",estado:"Transformado"},{cantidad:36,descripcion:"Reparación de piezas",estado:"Transformado"}]},
+  {id:3,fecha:"2024-11-12",kgBruto:230,kgReal:184,estado:"Transformado",transformadoEn:"8 Bancos altos (170kg), Mural (30kg), Logo grande (15kg)",obs:"Segunda entrega",desglose:[{cantidad:170,descripcion:"8 Bancos altos",estado:"Transformado"},{cantidad:30,descripcion:"Mural",estado:"Transformado"},{cantidad:15,descripcion:"Logo grande",estado:"Transformado"}]},
   {id:4,fecha:"2024-11-08",kgBruto:50,kgReal:0,estado:"En Stock",transformadoEn:"",obs:"Material flexible de otro plástico",desglose:[]},
-  {id:5,fecha:"2024-11-10",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Complemento entrega anterior (32kg), Bases para trofeos (18kg)",obs:"El resto se utilizó con polvo de molienda",desglose:[{cantidad:32,descripcion:"Complemento entrega anterior"},{cantidad:18,descripcion:"Bases para trofeos"}]},
-  {id:6,fecha:"2025-10-02",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Fabricación de contenedor (31kg), Restauración de contenedor",obs:"Tenemos plástico recuperado del sobrante",desglose:[{cantidad:31,descripcion:"Fabricación de contenedor"},{cantidad:9,descripcion:"Restauración de contenedor"}]},
+  {id:5,fecha:"2024-11-10",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Complemento entrega anterior (32kg), Bases para trofeos (18kg)",obs:"El resto se utilizó con polvo de molienda",desglose:[{cantidad:32,descripcion:"Complemento entrega anterior",estado:"Transformado"},{cantidad:18,descripcion:"Bases para trofeos",estado:"Transformado"}]},
+  {id:6,fecha:"2025-10-02",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Fabricación de contenedor (31kg), Restauración de contenedor",obs:"Tenemos plástico recuperado del sobrante",desglose:[{cantidad:31,descripcion:"Fabricación de contenedor",estado:"Transformado"},{cantidad:9,descripcion:"Restauración de contenedor",estado:"Transformado"}]},
   {id:7,fecha:"2026-02-17",kgBruto:650,kgReal:520,estado:"Molido",transformadoEn:"",obs:"Destinado a fabricación de 700 piezas",desglose:[]},
   {id:8,fecha:"2026-02-23",kgBruto:1.75,kgReal:1.4,estado:"En Stock",transformadoEn:"",obs:"",desglose:[]},
-  {id:9,fecha:"2026-05-04",kgBruto:60,kgReal:48,estado:"Transformado",transformadoEn:"17 Invitaciones ISTH",obs:"",desglose:[{cantidad:48,descripcion:"17 Invitaciones ISTH"}]},
-  {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya, 200 llaveros (8kg), 22 reconocimientos (22kg)",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar",desglose:[{cantidad:1400,descripcion:"350 organizadores Sogoya"},{cantidad:8,descripcion:"200 llaveros"},{cantidad:22,descripcion:"22 reconocimientos"},{cantidad:370,descripcion:"Excedente disponible para transformar"}]},
+  {id:9,fecha:"2026-05-04",kgBruto:60,kgReal:48,estado:"Transformado",transformadoEn:"17 Invitaciones ISTH",obs:"",desglose:[{cantidad:48,descripcion:"17 Invitaciones ISTH",estado:"Transformado"}]},
+  {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya, 200 llaveros (8kg), 22 reconocimientos (22kg)",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar",desglose:[{cantidad:1400,descripcion:"350 organizadores Sogoya",estado:"En Placas"},{cantidad:8,descripcion:"200 llaveros",estado:"Transformado"},{cantidad:22,descripcion:"22 reconocimientos",estado:"Transformado"},{cantidad:370,descripcion:"Excedente disponible para transformar",estado:"En Placas"}]},
 ];
 const PEDIDOS_INIT=[
   {id:1,nombre:"700 Artículos varios",cliente:"Novo Nordisk",kgReq:520,kgDisponible:true,fechaEst:"2026-08-30",etapa:2,cotizacion:"",oc:"",obs:"Destinado al material molido de Feb 2026"},
@@ -86,6 +86,7 @@ const DETALLE_INIT={
 };
 
 const inpSm={padding:"5px 8px",borderRadius:6,border:`1.5px solid ${BLUE}`,fontSize:12,fontWeight:600,outline:"none",background:WHITE,width:"100%"};
+const ESTADOS=["Transformado","Molido","En Stock","En Placas"];
 
 function EstadoBadge({estado}){
   const map={Transformado:{bg:GREEN_BG,c:GREEN},Molido:{bg:BLUE_L,c:BLUE},"En Stock":{bg:"#FEF9C3",c:"#A16207"},"En Placas":{bg:"#EDE9FE",c:"#7C3AED"}};
@@ -199,7 +200,7 @@ export default function App(){
   };
   const delRec=(id)=>setRecs(rs=>rs.filter(r=>r.id!==id));
   const toggleRec=(id)=>setOpenRecs(o=>o.includes(id)?o.filter(x=>x!==id):[...o,id]);
-  const addDesglose=(id)=>setRecs(rs=>rs.map(r=>r.id===id?{...r,desglose:[...(r.desglose||[]),{cantidad:0,descripcion:""}]}:r));
+  const addDesglose=(id)=>setRecs(rs=>rs.map(r=>r.id===id?{...r,desglose:[...(r.desglose||[]),{cantidad:0,descripcion:"",estado:"Transformado"}]}:r));
   const updDesglose=(id,idx,field,val)=>setRecs(rs=>rs.map(r=>r.id===id?{...r,desglose:r.desglose.map((d,j)=>j===idx?{...d,[field]:val}:d)}:r));
   const delDesglose=(id,idx)=>setRecs(rs=>rs.map(r=>r.id===id?{...r,desglose:r.desglose.filter((_,j)=>j!==idx)}:r));
 
@@ -233,7 +234,7 @@ export default function App(){
         ))}
         <div><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>Estado</div>
           <select style={inpSm} value={data.estado} onChange={e=>onChange({...data,estado:e.target.value})}>
-            {["Transformado","Molido","En Stock","En Placas"].map(s=><option key={s}>{s}</option>)}
+            {ESTADOS.map(s=><option key={s}>{s}</option>)}
           </select>
         </div>
       </div>
@@ -610,7 +611,12 @@ export default function App(){
                         <td style={{padding:"11px 14px",fontWeight:800,whiteSpace:"nowrap"}}>{r.fecha}</td>
                         <td style={{padding:"11px 14px",color:MUTED,fontWeight:600,whiteSpace:"nowrap"}}>{fmt(r.kgBruto)} kg</td>
                         <td style={{padding:"11px 14px",whiteSpace:"nowrap"}}><span style={{fontSize:15,fontWeight:900,color:BLUE}}>{fmt(r.kgReal)}</span><span style={{fontSize:11,color:MUTED,fontWeight:600}}> kg</span></td>
-                        <td style={{padding:"11px 14px"}}><EstadoBadge estado={r.estado}/></td>
+                        <td style={{padding:"11px 14px"}}>
+                          {(r.desglose||[]).length>0
+                            ?<div style={{display:"flex",flexWrap:"wrap",gap:4}}>{[...new Set(r.desglose.map(d=>d.estado).filter(Boolean))].map(e=><EstadoBadge key={e} estado={e}/>)}</div>
+                            :<EstadoBadge estado={r.estado}/>
+                          }
+                        </td>
                         <td style={{padding:"11px 14px",fontSize:11,color:TEXT,maxWidth:200}}>{r.transformadoEn||<span style={{color:MUTED}}>—</span>}</td>
                         <td style={{padding:"11px 14px",fontSize:11,color:MUTED,maxWidth:180}}>{r.obs||"—"}</td>
                         {isAdmin&&<td style={{padding:"11px 14px"}}><div style={{display:"flex",gap:4}}><EditBtn onClick={()=>{setEditRecId(r.id);setEditRecData({...r});}}/><DelBtn onClick={()=>delRec(r.id)}/></div></td>}
@@ -628,11 +634,15 @@ export default function App(){
                                     <input type="number" value={d.cantidad} onChange={e=>updDesglose(r.id,j,"cantidad",e.target.value)} style={{...inpSm,width:70,flexShrink:0}}/>
                                     <span style={{fontSize:11,color:MUTED,fontWeight:700,flexShrink:0}}>kg</span>
                                     <input type="text" value={d.descripcion} onChange={e=>updDesglose(r.id,j,"descripcion",e.target.value)} style={{...inpSm,flex:1}} placeholder="¿En qué se usó?"/>
+                                    <select value={d.estado||"Transformado"} onChange={e=>updDesglose(r.id,j,"estado",e.target.value)} style={{...inpSm,width:120,flexShrink:0}}>
+                                      {ESTADOS.map(s=><option key={s}>{s}</option>)}
+                                    </select>
                                     <DelBtn onClick={()=>delDesglose(r.id,j)}/>
                                   </>
                                   :<>
                                     <span style={{fontSize:13,fontWeight:900,color:BLUE,minWidth:64,flexShrink:0}}>{fmt(d.cantidad)} kg</span>
-                                    <span style={{fontSize:12,color:TEXT,fontWeight:600}}>{d.descripcion||"—"}</span>
+                                    <span style={{fontSize:12,color:TEXT,fontWeight:600,flex:1}}>{d.descripcion||"—"}</span>
+                                    {d.estado&&<EstadoBadge estado={d.estado}/>}
                                   </>
                                 }
                               </div>
