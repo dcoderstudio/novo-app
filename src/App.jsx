@@ -77,7 +77,8 @@ const PROYECTOS_INIT=[
   {id:15,nombre:"350 organizadores Sogoya",kg:1400,etapa:3,fecha:"2026-05-04"},
   {id:16,nombre:"200 llaveros",kg:8,etapa:7,fecha:"2026-05-04"},
   {id:17,nombre:"22 reconocimientos",kg:22,etapa:7,fecha:"2026-05-04"},
-  {id:18,nombre:"Excedente disponible para transformar",kg:370,etapa:3,fecha:"2026-05-04"},
+  {id:19,nombre:"700 Organizadores viales",kg:520,etapa:4,fecha:"2026-02-17"},
+  {id:20,nombre:"700 Portapapeles",kg:420,etapa:3,fecha:"2026-05-04"},
 ];
 const HISTORICO_FULL=[
   {mes:"Sep 24",kg:120},{mes:"Oct 24",kg:0},{mes:"Nov 24",kg:264},{mes:"Dic 24",kg:0},
