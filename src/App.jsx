@@ -65,23 +65,23 @@ const PEDIDOS_INIT=[
   {id:1,nombre:"700 Artículos varios",cliente:"Novo Nordisk",kgReq:520,kgDisponible:true,fechaEst:"2026-08-30",etapa:3,cotizacion:"",oc:"",obs:"Destinado al material molido de Feb 2026"},
 ];
 const PROYECTOS_INIT=[
-  {id:1,nombre:"2 Mesas",kg:28,etapa:6,fecha:"2024-09-30"},
-  {id:2,nombre:"2 Macetas",kg:18,etapa:6,fecha:"2024-09-30"},
-  {id:3,nombre:"2 Bancos",kg:14,etapa:6,fecha:"2024-09-30"},
-  {id:4,nombre:"8 Logotipos",kg:56,etapa:6,fecha:"2024-09-30"},
+  {id:1,nombre:"2 Mesas",kg:28,etapa:8,fecha:"2024-09-30"},
+  {id:2,nombre:"2 Macetas",kg:18,etapa:8,fecha:"2024-09-30"},
+  {id:3,nombre:"2 Bancos",kg:14,etapa:8,fecha:"2024-09-30"},
+  {id:4,nombre:"8 Logotipos",kg:56,etapa:8,fecha:"2024-09-30"},
   {id:5,nombre:"Molidos y entregados a Universum",kg:4,etapa:6,fecha:"2024-11-04"},
   {id:6,nombre:"Reparación de piezas",kg:36,etapa:6,fecha:"2024-11-04"},
-  {id:7,nombre:"8 Bancos altos",kg:170,etapa:6,fecha:"2024-11-12"},
-  {id:8,nombre:"Mural",kg:30,etapa:6,fecha:"2024-11-12"},
-  {id:9,nombre:"Logo grande",kg:15,etapa:6,fecha:"2024-11-12"},
+  {id:7,nombre:"8 Bancos altos",kg:170,etapa:8,fecha:"2024-11-12"},
+  {id:8,nombre:"Mural",kg:30,etapa:8,fecha:"2024-11-12"},
+  {id:9,nombre:"Logo grande",kg:15,etapa:8,fecha:"2024-11-12"},
   {id:10,nombre:"Complemento entrega anterior",kg:32,etapa:6,fecha:"2024-11-10"},
   {id:11,nombre:"Bases para trofeos",kg:18,etapa:6,fecha:"2024-11-10"},
-  {id:12,nombre:"Fabricación de contenedor",kg:31,etapa:6,fecha:"2025-10-02"},
+  {id:12,nombre:"Fabricación de contenedor",kg:31,etapa:8,fecha:"2025-10-02"},
   {id:13,nombre:"Restauración de contenedor",kg:9,etapa:6,fecha:"2025-10-02"},
-  {id:14,nombre:"17 Invitaciones ISTH",kg:48,etapa:6,fecha:"2026-05-04"},
+  {id:14,nombre:"17 Invitaciones ISTH",kg:48,etapa:7,fecha:"2026-05-04"},
   {id:15,nombre:"350 organizadores Sogoya",kg:1400,etapa:3,fecha:"2026-05-04"},
-  {id:16,nombre:"200 llaveros",kg:8,etapa:6,fecha:"2026-05-04"},
-  {id:17,nombre:"22 reconocimientos",kg:22,etapa:6,fecha:"2026-05-04"},
+  {id:16,nombre:"200 llaveros",kg:8,etapa:7,fecha:"2026-05-04"},
+  {id:17,nombre:"22 reconocimientos",kg:22,etapa:7,fecha:"2026-05-04"},
   {id:18,nombre:"Excedente disponible para transformar",kg:370,etapa:3,fecha:"2026-05-04"},
 ];
 const HISTORICO_FULL=[
@@ -799,7 +799,7 @@ export default function App(){
                   const active=items.length>0;
                   const over=dragOverEtapa?.board==="proy"&&dragOverEtapa.etapa===i;
                   const collapsible=items.length>5;
-                  const collapsed=collapsible&&collapsedEtapas[i];
+                  const collapsed=collapsible&&(collapsedEtapas[i]!==undefined?collapsedEtapas[i]:true);
                   return(
                     <div key={i} ref={el=>proyColRefs.current[i]=el} onDragOver={onColDragOver("proy",i)} onDragLeave={onColDragLeave("proy",i)} onDrop={onColDrop("proy",i)}
                       style={{minWidth:170,flex:"0 0 auto",borderRadius:12,border:`2px dashed ${over?BLUE:"transparent"}`,background:over?BLUE_L:"transparent",padding:4,transition:"background 0.15s,border-color 0.15s"}}>
