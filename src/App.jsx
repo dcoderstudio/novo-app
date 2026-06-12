@@ -59,6 +59,8 @@ const RECEPCIONES_INIT=[
   {id:6,fecha:"2025-10-02",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Fabricación de contenedor (31kg), Restauración de contenedor",obs:"Tenemos plástico recuperado del sobrante"},
   {id:7,fecha:"2026-02-17",kgBruto:650,kgReal:520,estado:"Molido",transformadoEn:"",obs:"Destinado a fabricación de 700 piezas"},
   {id:8,fecha:"2026-02-23",kgBruto:1.75,kgReal:1.4,estado:"En Stock",transformadoEn:"",obs:""},
+  {id:9,fecha:"2026-05-04",kgBruto:60,kgReal:48,estado:"Transformado",transformadoEn:"17 Invitaciones ISTH",obs:""},
+  {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar"},
 ];
 const PEDIDOS_INIT=[
   {id:1,nombre:"700 Artículos varios",cliente:"Novo Nordisk",kgReq:520,kgDisponible:true,fechaEst:"2026-08-30",etapa:2,cotizacion:"",oc:"",obs:"Destinado al material molido de Feb 2026"},
@@ -86,7 +88,7 @@ const DETALLE_INIT={
 const inpSm={padding:"5px 8px",borderRadius:6,border:`1.5px solid ${BLUE}`,fontSize:12,fontWeight:600,outline:"none",background:WHITE,width:"100%"};
 
 function EstadoBadge({estado}){
-  const map={Transformado:{bg:GREEN_BG,c:GREEN},Molido:{bg:BLUE_L,c:BLUE},"En Stock":{bg:"#FEF9C3",c:"#A16207"}};
+  const map={Transformado:{bg:GREEN_BG,c:GREEN},Molido:{bg:BLUE_L,c:BLUE},"En Stock":{bg:"#FEF9C3",c:"#A16207"},"En Placas":{bg:"#EDE9FE",c:"#7C3AED"}};
   const s=map[estado]||{bg:BG,c:MUTED};
   return <span style={{background:s.bg,color:s.c,borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700,whiteSpace:"nowrap"}}>{estado}</span>;
 }
@@ -171,6 +173,11 @@ export default function App(){
   const totalReal=recs.reduce((s,r)=>s+Number(r.kgReal),0);
   const totalPiezas=Object.values(detalle).reduce((s,arr)=>s+arr.reduce((a,p)=>a+p.cantidad,0),0);
   const pct=Math.min(100,Math.round((totalReal/metaKg)*100));
+  const kgPorEstado=estado=>recs.filter(r=>r.estado===estado).reduce((s,r)=>s+Number(r.kgReal),0);
+  const transformadoKg=kgPorEstado("Transformado");
+  const enStockKg=kgPorEstado("En Stock");
+  const enPlacasKg=kgPorEstado("En Placas");
+  const libreKg=totalReal-transformadoKg-enPlacasKg;
 
   const slices={"Todo":HISTORICO_FULL,"2024":HISTORICO_FULL.slice(0,4),"2025":HISTORICO_FULL.slice(4,16),"2026":HISTORICO_FULL.slice(16)};
   const filtered=slices[yrFilter];
@@ -221,7 +228,7 @@ export default function App(){
         ))}
         <div><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>Estado</div>
           <select style={inpSm} value={data.estado} onChange={e=>onChange({...data,estado:e.target.value})}>
-            {["Transformado","Molido","En Stock"].map(s=><option key={s}>{s}</option>)}
+            {["Transformado","Molido","En Stock","En Placas"].map(s=><option key={s}>{s}</option>)}
           </select>
         </div>
       </div>
@@ -600,10 +607,11 @@ export default function App(){
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
                 {[
-                  {label:"Total bruto",val:`${fmt(totalBruto)} kg`,grad:"linear-gradient(135deg,#475569,#6B7A99)"},
-                  {label:"Total real",val:`${fmt(totalReal)} kg`,grad:G_BLUE},
-                  {label:"Merma promedio",val:`${Math.round((1-totalReal/totalBruto)*100)}%`,grad:"linear-gradient(135deg,#92400E,#D97706)"},
-                  {label:"Transformados",val:recs.filter(r=>r.estado==="Transformado").length,grad:G_GREEN},
+                  {label:"Recibido",val:`${fmt(totalBruto)} kg`,grad:"linear-gradient(135deg,#475569,#6B7A99)"},
+                  {label:"Transformado",val:`${fmt(transformadoKg)} kg`,grad:G_GREEN},
+                  {label:"En stock",val:`${fmt(enStockKg)} kg`,grad:"linear-gradient(135deg,#92400E,#D97706)"},
+                  {label:"En placas",val:`${fmt(enPlacasKg)} kg`,grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
+                  {label:"Libre para transformar",val:`${fmt(libreKg)} kg`,grad:G_BLUE},
                 ].map(k=>(
                   <div key={k.label} style={{background:k.grad,borderRadius:12,padding:"1rem 1.25rem",boxShadow:"0 3px 12px rgba(0,0,0,0.1)"}}>
                     <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{k.label}</div>
