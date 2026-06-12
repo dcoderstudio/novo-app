@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const BLUE="#003E74",BLUE2="#1A5FA8",BLUE_L="#E8F0FA",WHITE="#FFFFFF",BG="#EEF1F8",BORDER="#DDE3EE",TEXT="#0A1628",MUTED="#6B7A99",GREEN="#16A34A",GREEN_BG="#DCFCE7";
 const G_NAV="linear-gradient(135deg,#003E74 0%,#1A5FA8 100%)";
@@ -173,6 +173,9 @@ export default function App(){
   const [newProyData,setNewProyData]=useState({nombre:"",kg:"",etapa:0,fecha:""});
   const [dragInfo,setDragInfo]=useState(null);
   const [dragOverEtapa,setDragOverEtapa]=useState(null);
+  const [focusEtapa,setFocusEtapa]=useState(0);
+  const proyColRefs=useRef([]);
+  const scrollToEtapa=(i)=>{setFocusEtapa(i);proyColRefs.current[i]?.scrollIntoView({behavior:"smooth",inline:"start",block:"nearest"});};
   const [editMeta,setEditMeta]=useState(false);
   const [editPiezaId,setEditPiezaId]=useState(null);
   const [editPiezaData,setEditPiezaData]=useState(null);
@@ -761,62 +764,7 @@ export default function App(){
               {isAdmin&&<div style={{background:BLUE_L,color:BLUE,borderRadius:10,padding:"8px 14px",fontSize:11,fontWeight:700,marginBottom:16}}>⠿ Arrastra una ficha y suéltala en la fase donde quedaría</div>}
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:12}}>
                 <div>
-                  <div style={{fontSize:24,fontWeight:900,color:TEXT,marginBottom:4}}>Pipeline de pedidos</div>
-                  <div style={{fontSize:14,color:MUTED,fontWeight:500}}>{pedidos.length} pedido{pedidos.length!==1?"s":""} registrado{pedidos.length!==1?"s":""}</div>
-                </div>
-                {isAdmin&&<button style={{background:G_BLUE,color:WHITE,border:"none",borderRadius:10,padding:"9px 18px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>{setShowNewPed(true);setEditPedId(null);}}>+ Nuevo pedido</button>}
-              </div>
-              {isAdmin&&showNewPed&&<PedInlineForm data={newPedData} onChange={setNewPedData} onSave={savePed} onCancel={()=>setShowNewPed(false)}/>}
-              {pedidos.length===0&&!showNewPed&&<div style={{background:WHITE,borderRadius:16,padding:"3rem",textAlign:"center",border:`1.5px dashed ${BORDER}`}}><div style={{fontSize:32,marginBottom:8}}>📋</div><div style={{fontSize:14,color:MUTED,fontWeight:600}}>No hay pedidos aún</div></div>}
-              <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8,marginBottom:32}}>
-                {ETAPAS.map((etapa,i)=>{
-                  const lotes=pedidos.filter(p=>p.etapa===i);
-                  const active=lotes.length>0;
-                  const over=dragOverEtapa?.board==="ped"&&dragOverEtapa.etapa===i;
-                  return(
-                    <div key={i} onDragOver={onColDragOver("ped",i)} onDragLeave={onColDragLeave("ped",i)} onDrop={onColDrop("ped",i)}
-                      style={{minWidth:170,flex:"0 0 auto",borderRadius:12,border:`2px dashed ${over?BLUE:"transparent"}`,background:over?BLUE_L:"transparent",padding:4,transition:"background 0.15s,border-color 0.15s"}}>
-                      <div style={{background:active?G_BLUE:BG,borderRadius:10,padding:"10px 12px",marginBottom:10,border:active?"none":`1px solid ${BORDER}`}}>
-                        <div style={{fontSize:14,marginBottom:2}}>{ETAPA_ICONS[i]}</div>
-                        <div style={{fontSize:11,fontWeight:800,color:active?WHITE:MUTED}}>{etapa}</div>
-                        {active&&<div style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600,marginTop:1}}>{lotes.length} pedido{lotes.length>1?"s":""}</div>}
-                      </div>
-                      {lotes.map(p=>(
-                        editPedId===p.id
-                          ?<div key={p.id} style={{marginBottom:8}}><PedInlineForm data={editPedData} onChange={setEditPedData} onSave={savePed} onCancel={()=>setEditPedId(null)}/></div>
-                          :<div key={p.id} draggable={isAdmin} onDragStart={onCardDragStart("ped",p.id)} onDragEnd={onCardDragEnd}
-                              style={{background:G_CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px",marginBottom:8,position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)",cursor:isAdmin?"grab":"default",opacity:dragInfo?.board==="ped"&&dragInfo.id===p.id?0.4:1}}>
-                            {isAdmin&&<div style={{position:"absolute",top:8,right:8,display:"flex",gap:4}}><EditBtn onClick={()=>{setEditPedId(p.id);setEditPedData({...p});}}/><DelBtn onClick={()=>delPed(p.id)}/></div>}
-                            <div style={{fontSize:12,fontWeight:800,color:TEXT,marginBottom:4,paddingRight:isAdmin?60:0}}>{p.nombre}</div>
-                            <div style={{fontSize:11,color:MUTED,fontWeight:600,marginBottom:4}}>{p.cliente}</div>
-                            <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:6}}>
-                              <span style={{fontSize:18,fontWeight:900,color:BLUE}}>{fmt(p.kgReq)}</span>
-                              <span style={{fontSize:10,color:MUTED,fontWeight:600}}>kg req.</span>
-                            </div>
-                            <div style={{marginBottom:6}}>
-                              <span style={{background:p.kgDisponible?GREEN_BG:"#FEF9C3",color:p.kgDisponible?GREEN:"#A16207",borderRadius:20,padding:"2px 8px",fontSize:10,fontWeight:700}}>{p.kgDisponible?"✓ Disponible":"⏳ Pendiente"}</span>
-                            </div>
-                            {p.fechaEst&&<div style={{fontSize:10,color:MUTED,fontWeight:600,marginBottom:4}}>📅 {p.fechaEst}</div>}
-                            {p.obs&&<div style={{fontSize:10,color:MUTED,marginBottom:6,lineHeight:1.4}}>{p.obs}</div>}
-                            <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:8}}>
-                              {p.cotizacion&&<span style={{background:BLUE_L,color:BLUE,borderRadius:6,padding:"2px 8px",fontSize:10,fontWeight:700}}>📄 Cot.</span>}
-                              {p.oc&&<span style={{background:GREEN_BG,color:GREEN,borderRadius:6,padding:"2px 8px",fontSize:10,fontWeight:700}}>📋 OC</span>}
-                            </div>
-                            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,borderTop:`1px solid ${BORDER}`,paddingTop:8}}>
-                              <EtapaBadge i={p.etapa}/>
-                              {isAdmin&&<span style={{fontSize:10,color:MUTED,fontWeight:600}}>⠿ arrastra</span>}
-                            </div>
-                          </div>
-                      ))}
-                      {lotes.length===0&&<div style={{background:WHITE,border:`1.5px dashed ${BORDER}`,borderRadius:10,padding:"14px 12px",textAlign:"center"}}><div style={{fontSize:10,color:MUTED,fontWeight:600}}>Sin pedidos</div></div>}
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:12}}>
-                <div>
-                  <div style={{fontSize:24,fontWeight:900,color:TEXT,marginBottom:4}}>Proyectos de transformación</div>
+                  <div style={{fontSize:24,fontWeight:900,color:TEXT,marginBottom:4}}>Proyectos</div>
                   <div style={{fontSize:14,color:MUTED,fontWeight:500}}>{proyectos.length} proyecto{proyectos.length!==1?"s":""} generado{proyectos.length!==1?"s":""} a partir del material recibido</div>
                 </div>
                 {isAdmin&&<button style={{background:G_BLUE,color:WHITE,border:"none",borderRadius:10,padding:"9px 18px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>{setShowNewProy(true);setEditProyId(null);}}>+ Nuevo proyecto</button>}
@@ -829,7 +777,7 @@ export default function App(){
                   const active=items.length>0;
                   const over=dragOverEtapa?.board==="proy"&&dragOverEtapa.etapa===i;
                   return(
-                    <div key={i} onDragOver={onColDragOver("proy",i)} onDragLeave={onColDragLeave("proy",i)} onDrop={onColDrop("proy",i)}
+                    <div key={i} ref={el=>proyColRefs.current[i]=el} onDragOver={onColDragOver("proy",i)} onDragLeave={onColDragLeave("proy",i)} onDrop={onColDrop("proy",i)}
                       style={{minWidth:170,flex:"0 0 auto",borderRadius:12,border:`2px dashed ${over?BLUE:"transparent"}`,background:over?BLUE_L:"transparent",padding:4,transition:"background 0.15s,border-color 0.15s"}}>
                       <div style={{background:active?G_BLUE:BG,borderRadius:10,padding:"10px 12px",marginBottom:10,border:active?"none":`1px solid ${BORDER}`}}>
                         <div style={{fontSize:14,marginBottom:2}}>{ETAPA_ICONS[i]}</div>
@@ -857,6 +805,13 @@ export default function App(){
                     </div>
                   );
                 })}
+              </div>
+              <div style={{display:"flex",gap:8,overflowX:"auto",marginTop:16,paddingTop:12,borderTop:`1px solid ${BORDER}`}}>
+                {ETAPAS.map((etapa,i)=>(
+                  <button key={i} onClick={()=>scrollToEtapa(i)} style={{flex:"0 0 auto",display:"flex",alignItems:"center",gap:6,background:focusEtapa===i?G_BLUE:BG,color:focusEtapa===i?WHITE:MUTED,border:focusEtapa===i?"none":`1px solid ${BORDER}`,borderRadius:20,padding:"7px 14px",fontSize:11,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>
+                    <span>{ETAPA_ICONS[i]}</span><span>{etapa}</span>
+                  </button>
+                ))}
               </div>
             </>
           )}
