@@ -12,7 +12,6 @@ const PIEZAS_COLORS=[BLUE,BLUE2,"#7C3AED","#0891B2"];
 const PIEZAS_GRADS=["linear-gradient(135deg,#002D5C,#1A5FA8)","linear-gradient(135deg,#1A5FA8,#2176C2)","linear-gradient(135deg,#4C1D95,#7C3AED)","linear-gradient(135deg,#0891B2,#22D3EE)"];
 const KG_POR_PLUMA=0.04;
 const ETAPAS=["Recepción","Limpieza","Molienda","Placas","Corte","Ensamble","Entregado","Facturado","Pagado"];
-const ETAPA_ICONS=["📦","🧹","⚙️","🟦","✂️","🔩","✅","🧾","💰"];
 const PROCESO_PRODUCCION=["Recolección","Triturado","Fabricación de molde en CNC","Prensado y vulcanización","Desmoldeo","Aplanado","Corte en CNC","Lijado y pulido","Armado"];
 const PROCESO_ICONS=["🚚","🔨","🛠️","🔥","📤","🟦","✂️","✨","🧩"];
 const PIEZAS_HISTORIA=[
@@ -114,7 +113,22 @@ function EstadoBadge({estado}){
   return <span style={{background:s.bg,color:s.c,borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700,whiteSpace:"nowrap"}}>{estado}</span>;
 }
 function EtapaBadge({i}){
-  return <span style={{display:"inline-flex",alignItems:"center",gap:4,background:BLUE_L,color:BLUE,borderRadius:20,padding:"3px 9px",fontSize:10,fontWeight:700,whiteSpace:"nowrap"}}>{ETAPA_ICONS[i]} {ETAPAS[i]}</span>;
+  return <span style={{display:"inline-flex",alignItems:"center",gap:4,background:BLUE_L,color:BLUE,borderRadius:20,padding:"3px 9px",fontSize:10,fontWeight:700,whiteSpace:"nowrap"}}><EtapaIcon i={i} size={11}/> {ETAPAS[i]}</span>;
+}
+function EtapaIcon({i,size=14,color="currentColor"}){
+  const p={width:size,height:size,viewBox:"0 0 24 24",fill:"none",stroke:color,strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round",style:{flexShrink:0}};
+  switch(i){
+    case 0: return <svg {...p}><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>;
+    case 1: return <svg {...p}><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>;
+    case 2: return <svg {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
+    case 3: return <svg {...p}><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>;
+    case 4: return <svg {...p}><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>;
+    case 5: return <svg {...p}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>;
+    case 6: return <svg {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+    case 7: return <svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>;
+    case 8: return <svg {...p}><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5c0-1.38-1.34-2.5-3-2.5s-3 1.12-3 2.5 1.34 2.5 3 2.5 3 1.12 3 2.5-1.34 2.5-3 2.5-3-1.12-3-2.5"/></svg>;
+    default: return null;
+  }
 }
 function EditBtn({onClick}){return <button onClick={onClick} title="Editar" style={{background:BLUE_L,color:BLUE,border:"none",borderRadius:6,width:28,height:28,cursor:"pointer",fontSize:13,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✏️</button>;}
 function SaveBtn({onClick}){return <button onClick={onClick} style={{background:BLUE,color:WHITE,border:"none",borderRadius:6,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer"}}>Guardar</button>;}
@@ -174,6 +188,7 @@ export default function App(){
   const [dragInfo,setDragInfo]=useState(null);
   const [dragOverEtapa,setDragOverEtapa]=useState(null);
   const [focusEtapa,setFocusEtapa]=useState(0);
+  const [collapsedEtapas,setCollapsedEtapas]=useState({});
   const proyColRefs=useRef([]);
   const scrollToEtapa=(i)=>{setFocusEtapa(i);proyColRefs.current[i]?.scrollIntoView({behavior:"smooth",inline:"start",block:"nearest"});};
   const [editMeta,setEditMeta]=useState(false);
@@ -316,7 +331,7 @@ export default function App(){
         ))}
         <div><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>Etapa</div>
           <select style={inpSm} value={data.etapa} onChange={e=>onChange({...data,etapa:Number(e.target.value)})}>
-            {ETAPAS.map((e,i)=><option key={i} value={i}>{ETAPA_ICONS[i]} {e}</option>)}
+            {ETAPAS.map((e,i)=><option key={i} value={i}>{e}</option>)}
           </select>
         </div>
       </div>
@@ -345,7 +360,7 @@ export default function App(){
         ))}
         <div><div style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5,marginBottom:3}}>Etapa</div>
           <select style={inpSm} value={data.etapa} onChange={e=>onChange({...data,etapa:Number(e.target.value)})}>
-            {ETAPAS.map((e,i)=><option key={i} value={i}>{ETAPA_ICONS[i]} {e}</option>)}
+            {ETAPAS.map((e,i)=><option key={i} value={i}>{e}</option>)}
           </select>
         </div>
       </div>
@@ -769,6 +784,13 @@ export default function App(){
                 </div>
                 {isAdmin&&<button style={{background:G_BLUE,color:WHITE,border:"none",borderRadius:10,padding:"9px 18px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>{setShowNewProy(true);setEditProyId(null);}}>+ Nuevo proyecto</button>}
               </div>
+              <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:16}}>
+                {ETAPAS.map((etapa,i)=>(
+                  <button key={i} onClick={()=>scrollToEtapa(i)} style={{flex:"0 0 auto",display:"flex",alignItems:"center",gap:6,background:focusEtapa===i?G_BLUE:BG,color:focusEtapa===i?WHITE:MUTED,border:focusEtapa===i?"none":`1px solid ${BORDER}`,borderRadius:20,padding:"7px 14px",fontSize:11,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>
+                    <EtapaIcon i={i} size={13}/><span>{etapa}</span>
+                  </button>
+                ))}
+              </div>
               {isAdmin&&showNewProy&&<ProyInlineForm data={newProyData} onChange={setNewProyData} onSave={saveProy} onCancel={()=>setShowNewProy(false)}/>}
               {proyectos.length===0&&!showNewProy&&<div style={{background:WHITE,borderRadius:16,padding:"3rem",textAlign:"center",border:`1.5px dashed ${BORDER}`}}><div style={{fontSize:32,marginBottom:8}}>🧩</div><div style={{fontSize:14,color:MUTED,fontWeight:600}}>No hay proyectos aún</div></div>}
               <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8}}>
@@ -776,42 +798,43 @@ export default function App(){
                   const items=proyectos.filter(p=>p.etapa===i);
                   const active=items.length>0;
                   const over=dragOverEtapa?.board==="proy"&&dragOverEtapa.etapa===i;
+                  const collapsible=items.length>5;
+                  const collapsed=collapsible&&collapsedEtapas[i];
                   return(
                     <div key={i} ref={el=>proyColRefs.current[i]=el} onDragOver={onColDragOver("proy",i)} onDragLeave={onColDragLeave("proy",i)} onDrop={onColDrop("proy",i)}
                       style={{minWidth:170,flex:"0 0 auto",borderRadius:12,border:`2px dashed ${over?BLUE:"transparent"}`,background:over?BLUE_L:"transparent",padding:4,transition:"background 0.15s,border-color 0.15s"}}>
                       <div style={{background:active?G_BLUE:BG,borderRadius:10,padding:"10px 12px",marginBottom:10,border:active?"none":`1px solid ${BORDER}`}}>
-                        <div style={{fontSize:14,marginBottom:2}}>{ETAPA_ICONS[i]}</div>
+                        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}}>
+                          <EtapaIcon i={i} size={18} color={active?WHITE:MUTED}/>
+                          {collapsible&&<button onClick={()=>setCollapsedEtapas(c=>({...c,[i]:!c[i]}))} title={collapsed?"Mostrar fichas":"Ocultar fichas"} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:6,width:20,height:20,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:WHITE,fontSize:11,padding:0}}>{collapsed?"▾":"▴"}</button>}
+                        </div>
                         <div style={{fontSize:11,fontWeight:800,color:active?WHITE:MUTED}}>{etapa}</div>
                         {active&&<div style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600,marginTop:1}}>{items.length} proyecto{items.length>1?"s":""}</div>}
                       </div>
-                      {items.map(p=>(
-                        editProyId===p.id
-                          ?<div key={p.id} style={{marginBottom:8}}><ProyInlineForm data={editProyData} onChange={setEditProyData} onSave={saveProy} onCancel={()=>setEditProyId(null)}/></div>
-                          :<div key={p.id} draggable={isAdmin} onDragStart={onCardDragStart("proy",p.id)} onDragEnd={onCardDragEnd}
-                              style={{background:G_CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px",marginBottom:8,position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)",cursor:isAdmin?"grab":"default",opacity:dragInfo?.board==="proy"&&dragInfo.id===p.id?0.4:1}}>
-                            {isAdmin&&<div style={{position:"absolute",top:8,right:8,display:"flex",gap:4}}><EditBtn onClick={()=>{setEditProyId(p.id);setEditProyData({...p});}}/><DelBtn onClick={()=>delProy(p.id)}/></div>}
-                            <div style={{fontSize:12,fontWeight:800,color:TEXT,marginBottom:6,paddingRight:isAdmin?60:0}}>{p.nombre}</div>
-                            <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:8}}>
-                              <span style={{fontSize:18,fontWeight:900,color:BLUE}}>{fmt(p.kg)}</span>
-                              <span style={{fontSize:10,color:MUTED,fontWeight:600}}>kg</span>
+                      {collapsed
+                        ?<div style={{background:WHITE,border:`1.5px dashed ${BORDER}`,borderRadius:10,padding:"14px 12px",textAlign:"center"}}><div style={{fontSize:10,color:MUTED,fontWeight:600}}>{items.length} ocultos</div></div>
+                        :items.map(p=>(
+                          editProyId===p.id
+                            ?<div key={p.id} style={{marginBottom:8}}><ProyInlineForm data={editProyData} onChange={setEditProyData} onSave={saveProy} onCancel={()=>setEditProyId(null)}/></div>
+                            :<div key={p.id} draggable={isAdmin} onDragStart={onCardDragStart("proy",p.id)} onDragEnd={onCardDragEnd}
+                                style={{background:G_CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px",marginBottom:8,position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)",cursor:isAdmin?"grab":"default",opacity:dragInfo?.board==="proy"&&dragInfo.id===p.id?0.4:1}}>
+                              {isAdmin&&<div style={{position:"absolute",top:8,right:8,display:"flex",gap:4}}><EditBtn onClick={()=>{setEditProyId(p.id);setEditProyData({...p});}}/><DelBtn onClick={()=>delProy(p.id)}/></div>}
+                              <div style={{fontSize:12,fontWeight:800,color:TEXT,marginBottom:6,paddingRight:isAdmin?60:0}}>{p.nombre}</div>
+                              <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:8}}>
+                                <span style={{fontSize:18,fontWeight:900,color:BLUE}}>{fmt(p.kg)}</span>
+                                <span style={{fontSize:10,color:MUTED,fontWeight:600}}>kg</span>
+                              </div>
+                              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,flexWrap:"wrap",borderTop:`1px solid ${BORDER}`,paddingTop:8}}>
+                                <EtapaBadge i={p.etapa}/>
+                                {p.fecha&&<span style={{fontSize:10,color:MUTED,fontWeight:600}}>📅 {p.fecha}</span>}
+                              </div>
                             </div>
-                            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,flexWrap:"wrap",borderTop:`1px solid ${BORDER}`,paddingTop:8}}>
-                              <EtapaBadge i={p.etapa}/>
-                              {p.fecha&&<span style={{fontSize:10,color:MUTED,fontWeight:600}}>📅 {p.fecha}</span>}
-                            </div>
-                          </div>
-                      ))}
+                        ))
+                      }
                       {items.length===0&&<div style={{background:WHITE,border:`1.5px dashed ${BORDER}`,borderRadius:10,padding:"14px 12px",textAlign:"center"}}><div style={{fontSize:10,color:MUTED,fontWeight:600}}>Sin proyectos</div></div>}
                     </div>
                   );
                 })}
-              </div>
-              <div style={{display:"flex",gap:8,overflowX:"auto",marginTop:16,paddingTop:12,borderTop:`1px solid ${BORDER}`}}>
-                {ETAPAS.map((etapa,i)=>(
-                  <button key={i} onClick={()=>scrollToEtapa(i)} style={{flex:"0 0 auto",display:"flex",alignItems:"center",gap:6,background:focusEtapa===i?G_BLUE:BG,color:focusEtapa===i?WHITE:MUTED,border:focusEtapa===i?"none":`1px solid ${BORDER}`,borderRadius:20,padding:"7px 14px",fontSize:11,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>
-                    <span>{ETAPA_ICONS[i]}</span><span>{etapa}</span>
-                  </button>
-                ))}
               </div>
             </>
           )}
