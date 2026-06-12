@@ -60,7 +60,7 @@ const RECEPCIONES_INIT=[
   {id:7,fecha:"2026-02-17",kgBruto:650,kgReal:520,estado:"Molido",transformadoEn:"",obs:"Destinado a fabricación de 700 piezas",desglose:[]},
   {id:8,fecha:"2026-02-23",kgBruto:1.75,kgReal:1.4,estado:"En Stock",transformadoEn:"",obs:"",desglose:[]},
   {id:9,fecha:"2026-05-04",kgBruto:60,kgReal:48,estado:"Transformado",transformadoEn:"17 Invitaciones ISTH",obs:"",desglose:[{cantidad:48,descripcion:"17 Invitaciones ISTH"}]},
-  {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar",desglose:[{cantidad:1400,descripcion:"350 organizadores Sogoya"},{cantidad:400,descripcion:"Excedente disponible para transformar"}]},
+  {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya, 200 llaveros (8kg), 22 reconocimientos (22kg)",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar",desglose:[{cantidad:1400,descripcion:"350 organizadores Sogoya"},{cantidad:8,descripcion:"200 llaveros"},{cantidad:22,descripcion:"22 reconocimientos"},{cantidad:370,descripcion:"Excedente disponible para transformar"}]},
 ];
 const PEDIDOS_INIT=[
   {id:1,nombre:"700 Artículos varios",cliente:"Novo Nordisk",kgReq:520,kgDisponible:true,fechaEst:"2026-08-30",etapa:2,cotizacion:"",oc:"",obs:"Destinado al material molido de Feb 2026"},
