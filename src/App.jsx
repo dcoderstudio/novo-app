@@ -350,6 +350,208 @@ function RutaAccionDiagram({cur,setCur}){
   );
 }
 
+function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,totalReal,totalPiezas,pct,isAdmin,objetivoInicial,setObjetivoInicial,descubrimientos,setDescubrimientos,proyecciones,setProyecciones}){
+    const HISTORIA_PAGES=[{type:"intro"}];
+    objetivoInicial.forEach((_,i)=>HISTORIA_PAGES.push({type:"objetivo",i}));
+    HISTORIA_PAGES.push({type:"ruta-accion"});
+    HISTORIA_PAGES.push({type:"proyecto"});
+    HISTORIA_PAGES.push({type:"trayecto"});
+    HISTORIA_PAGES.push({type:"produccion"});
+    HISTORIA_PAGES.push({type:"piezas"});
+    descubrimientos.forEach((_,i)=>HISTORIA_PAGES.push({type:"descubrimientos",i}));
+    proyecciones.forEach((_,i)=>HISTORIA_PAGES.push({type:"proyecciones",i}));
+    const curIdx=Math.max(0,Math.min(slideIdx,HISTORIA_PAGES.length-1));
+    const [rutaStep,setRutaStep]=useState(0);
+    const goTo=i=>{
+      const idx=Math.max(0,Math.min(HISTORIA_PAGES.length-1,i));
+      if(HISTORIA_PAGES[idx].type==="ruta-accion") setRutaStep(0);
+      setSlideIdx(idx);
+    };
+    const navigate=dir=>{
+      const cur=HISTORIA_PAGES[curIdx];
+      if(cur.type==="ruta-accion"){
+        if(dir>0&&rutaStep<RUTA_STEPS.length){setRutaStep(s=>s+1);return;}
+        if(dir<0&&rutaStep>0){setRutaStep(s=>s-1);return;}
+      }
+      const nextIdx=curIdx+dir;
+      if(nextIdx<0||nextIdx>HISTORIA_PAGES.length-1) return;
+      if(HISTORIA_PAGES[nextIdx].type==="ruta-accion") setRutaStep(dir>0?0:RUTA_STEPS.length);
+      setSlideIdx(nextIdx);
+    };
+
+    useEffect(()=>{
+      if(!showHistoria) return;
+      const handler=e=>{
+        if(e.key==="ArrowRight"){e.preventDefault();navigate(1);}
+        else if(e.key==="ArrowLeft"){e.preventDefault();navigate(-1);}
+        else if(e.key==="Escape"){setShowHistoria(false);setSlideIdx(0);}
+      };
+      window.addEventListener("keydown",handler);
+      return ()=>window.removeEventListener("keydown",handler);
+    },[showHistoria,curIdx,rutaStep,HISTORIA_PAGES.length]);
+
+    useEffect(()=>{
+      if(!showHistoria) return;
+      document.body.style.background=G_HERO;
+      return ()=>{document.body.style.background="";};
+    },[showHistoria]);
+
+    if(!showHistoria) return null;
+    const close=()=>{setShowHistoria(false);setSlideIdx(0);};
+    const sortedRecs=[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha));
+    const page=HISTORIA_PAGES[curIdx];
+    const BULLET_META={
+      objetivo:{titulo:"Objetivo Inicial del Proyecto",subtitulo:"¿Por qué nacimos?",items:objetivoInicial,setItems:setObjetivoInicial},
+      descubrimientos:{titulo:"Descubrimientos sobre la marcha",subtitulo:"Aprendizajes",items:descubrimientos,setItems:setDescubrimientos},
+      proyecciones:{titulo:"Proyecciones a futuro",subtitulo:"Lo que viene",items:proyecciones,setItems:setProyecciones},
+    };
+    const navBtn=(dir)=>{
+      const atEdge=dir<0?curIdx===0:curIdx===HISTORIA_PAGES.length-1;
+      const midRuta=page.type==="ruta-accion"&&(dir<0?rutaStep>0:rutaStep<RUTA_STEPS.length);
+      const disabled=atEdge&&!midRuta;
+      return(
+        <button className="hist-nav-btn" onClick={()=>navigate(dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
+      );
+    };
+    return(
+      <div style={{position:"fixed",inset:0,background:G_HERO,zIndex:200,display:"flex",flexDirection:"column",color:WHITE,animation:"histModalIn 0.35s ease"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"1.25rem 2rem",flexShrink:0}}>
+          <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",opacity:0.5}}>Waste Into Value — Nuestra Historia</div>
+          <div style={{display:"flex",alignItems:"center",gap:16}}>
+            <div style={{fontSize:11,fontWeight:700,opacity:0.4,letterSpacing:1}}>{curIdx+1} / {HISTORIA_PAGES.length}</div>
+            <button onClick={close} style={{background:"rgba(255,255,255,0.12)",border:"none",color:WHITE,borderRadius:8,width:32,height:32,fontSize:16,cursor:"pointer"}}>✕</button>
+          </div>
+        </div>
+        <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 2rem 1rem",overflow:"hidden"}}>
+        <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          {page.type==="intro"&&(
+            <div style={{textAlign:"center",maxWidth:760}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:14}}>Programa de Economía Circular</div>
+              <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
+              <div style={{fontSize:16,opacity:0.7,marginBottom:40,lineHeight:1.6,maxWidth:560,marginLeft:"auto",marginRight:"auto"}}>De residuo plástico a productos con propósito: este es el recorrido del proyecto desde su primera entrega hasta hoy.</div>
+              <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,56px)",flexWrap:"wrap"}}>
+                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:"+150",l:"personas impactadas"},{v:`${pct}%`,l:"de la meta"}].map((s,i)=>(
+                  <div key={s.l} className="hist-stat" style={{animationDelay:`${0.15+i*0.1}s`}}>
+                    <div style={{fontSize:"clamp(28px,5vw,44px)",fontWeight:900}}>{s.v}</div>
+                    <div style={{fontSize:11,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {["objetivo","descubrimientos","proyecciones"].includes(page.type)&&(()=>{
+            const meta=BULLET_META[page.type];
+            const i=page.i;
+            return(
+              <div style={{maxWidth:760,width:"100%",textAlign:"center"}}>
+                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.5,marginBottom:10}}>{meta.subtitulo}</div>
+                <div style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,marginBottom:36}}>{meta.titulo}</div>
+                {isAdmin
+                  ?<textarea value={meta.items[i]} onChange={e=>meta.setItems(arr=>arr.map((x,j)=>j===i?e.target.value:x))} style={{width:"100%",maxWidth:680,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:18,color:WHITE,fontSize:"clamp(18px,3vw,26px)",fontWeight:700,lineHeight:1.6,padding:"1.75rem",resize:"vertical",minHeight:140,outline:"none",fontFamily:"inherit",textAlign:"center"}}/>
+                  :<div className="hist-stat" style={{fontSize:"clamp(19px,3.4vw,30px)",fontWeight:700,lineHeight:1.65,padding:"2rem 2.5rem",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:20}}>{meta.items[i]}</div>
+                }
+                <div style={{fontSize:12,opacity:0.4,fontWeight:800,letterSpacing:2,marginTop:28}}>{i+1} / {meta.items.length}</div>
+                {isAdmin&&(
+                  <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:16}}>
+                    <button onClick={()=>meta.setItems(arr=>arr.filter((_,j)=>j!==i))} style={{background:"rgba(255,255,255,0.1)",border:"none",color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>🗑 Eliminar punto</button>
+                    <button onClick={()=>meta.setItems(arr=>[...arr,""])} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>+ Agregar punto</button>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+          {page.type==="ruta-accion"&&(
+            <div style={{maxWidth:760,width:"100%"}}>
+              <RutaAccionDiagram cur={rutaStep} setCur={setRutaStep}/>
+            </div>
+          )}
+          {page.type==="proyecto"&&(
+            <div style={{maxWidth:820,width:"100%"}}>
+              <div style={{textAlign:"center",marginBottom:28}}>
+                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Proyecto</div>
+                <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900}}>Objetivo y Contexto</div>
+              </div>
+              <div style={{fontSize:15,opacity:0.75,lineHeight:1.7,textAlign:"center",maxWidth:680,margin:"0 auto 32px"}}>
+                Crear objetos funcionales y decorativos para las nuevas oficinas de Novo Nordisk México a partir de plumas de inyección recicladas: un entorno de trabajo inspirador que respalda el compromiso de la empresa con la sustentabilidad y la reducción de residuos.
+              </div>
+              <div style={{display:"flex",justifyContent:"center",gap:"clamp(16px,4vw,40px)",flexWrap:"wrap"}}>
+                {[{v:"78%",l:"de residuos se recicla"},{v:"0.3%",l:"a vertederos"},{v:"100%",l:"energía renovable"},{v:"2030",l:"meta cero emisiones CO₂"}].map((s,i)=>(
+                  <div key={s.l} className="hist-stat" style={{animationDelay:`${0.1+i*0.08}s`,background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"1rem 1.25rem",minWidth:130,textAlign:"center"}}>
+                    <div style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900}}>{s.v}</div>
+                    <div style={{fontSize:10,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {page.type==="trayecto"&&(
+            <div style={{maxWidth:980,width:"100%",textAlign:"center"}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Trayecto</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:36}}>{recs.length} recepciones desde {sortedRecs[0]?.fecha}</div>
+              <div style={{display:"flex",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
+                {sortedRecs.map((r,i)=>(
+                  <div key={r.id} className="hist-stat" style={{animationDelay:`${0.05+i*0.05}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1rem 1.1rem",minWidth:150,maxWidth:200,textAlign:"left"}}>
+                    <div style={{fontSize:11,fontWeight:800,opacity:0.5,letterSpacing:1}}>{r.fecha}</div>
+                    <div style={{fontSize:18,fontWeight:900,marginTop:2}}>{fmt(r.kgReal)} kg</div>
+                    <div style={{fontSize:11,fontWeight:700,opacity:0.55,marginTop:2}}>{r.estado}</div>
+                    {r.transformadoEn&&<div style={{fontSize:11,opacity:0.6,marginTop:6,lineHeight:1.4}}>{r.transformadoEn}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {page.type==="produccion"&&(
+            <div style={{maxWidth:900,width:"100%",textAlign:"center"}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Ruta de Acción</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>¿Cómo logramos nuestro objetivo?</div>
+              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>De residuo plástico a producto terminado, paso a paso</div>
+              <div style={{display:"flex",justifyContent:"center",gap:10,flexWrap:"wrap"}}>
+                {PROCESO_PRODUCCION.map((e,i)=>(
+                  <div key={i} className="hist-stat" style={{animationDelay:`${0.06+i*0.06}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1.25rem 1rem",minWidth:120,maxWidth:150,position:"relative"}}>
+                    <div style={{position:"absolute",top:8,left:10,fontSize:10,opacity:0.35,fontWeight:800}}>{i+1}</div>
+                    <div style={{fontSize:28,marginBottom:6}}>{PROCESO_ICONS[i]}</div>
+                    <div style={{fontSize:12,fontWeight:800,lineHeight:1.3}}>{e}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {page.type==="piezas"&&(
+            <div style={{maxWidth:860,width:"100%",textAlign:"center"}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Lo que hemos creado</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>101 piezas creadas</div>
+              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>a partir de plástico reciclado · +500 kg transformados hasta ahora</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:14}}>
+                {PIEZAS_HISTORIA.map((p,i)=>(
+                  <div key={p.nombre} className="hist-stat" style={{animationDelay:`${0.06+i*0.05}s`,background:"rgba(255,255,255,0.1)",borderRadius:16,padding:"1.25rem"}}>
+                    <div style={{fontSize:28,marginBottom:8}}>{p.icon}</div>
+                    <div style={{fontSize:28,fontWeight:900}}>{p.cantidad}</div>
+                    <div style={{fontSize:11,opacity:0.6,fontWeight:700,marginTop:4,lineHeight:1.3}}>{p.nombre}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:20,padding:"1.5rem 2rem 2rem",flexShrink:0}}>
+          {navBtn(-1)}
+          <div style={{display:"flex",gap:8}}>
+            {HISTORIA_SECTIONS.map(sec=>{
+              const firstIdx=HISTORIA_PAGES.findIndex(p=>p.type===sec.type);
+              if(firstIdx===-1) return null;
+              const active=page.type===sec.type;
+              return(
+                <div key={sec.type} className="hist-dot" onClick={()=>goTo(firstIdx)} title={sec.label} style={{width:active?28:9,height:9,borderRadius:99,background:active?WHITE:"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.25s"}}/>
+              );
+            })}
+          </div>
+          {navBtn(1)}
+        </div>
+      </div>
+    );
+}
+
 export default function App(){
   const [recs,setRecs]=useState(RECEPCIONES_INIT);
   const [pedidos,setPedidos]=useState(PEDIDOS_INIT);
@@ -585,212 +787,10 @@ export default function App(){
     );
   };
 
-  const HistoriaModal=()=>{
-    const HISTORIA_PAGES=[{type:"intro"}];
-    objetivoInicial.forEach((_,i)=>HISTORIA_PAGES.push({type:"objetivo",i}));
-    HISTORIA_PAGES.push({type:"ruta-accion"});
-    HISTORIA_PAGES.push({type:"proyecto"});
-    HISTORIA_PAGES.push({type:"trayecto"});
-    HISTORIA_PAGES.push({type:"produccion"});
-    HISTORIA_PAGES.push({type:"piezas"});
-    descubrimientos.forEach((_,i)=>HISTORIA_PAGES.push({type:"descubrimientos",i}));
-    proyecciones.forEach((_,i)=>HISTORIA_PAGES.push({type:"proyecciones",i}));
-    const curIdx=Math.max(0,Math.min(slideIdx,HISTORIA_PAGES.length-1));
-    const [rutaStep,setRutaStep]=useState(0);
-    const goTo=i=>{
-      const idx=Math.max(0,Math.min(HISTORIA_PAGES.length-1,i));
-      if(HISTORIA_PAGES[idx].type==="ruta-accion") setRutaStep(0);
-      setSlideIdx(idx);
-    };
-    const navigate=dir=>{
-      const cur=HISTORIA_PAGES[curIdx];
-      if(cur.type==="ruta-accion"){
-        if(dir>0&&rutaStep<RUTA_STEPS.length){setRutaStep(s=>s+1);return;}
-        if(dir<0&&rutaStep>0){setRutaStep(s=>s-1);return;}
-      }
-      const nextIdx=curIdx+dir;
-      if(nextIdx<0||nextIdx>HISTORIA_PAGES.length-1) return;
-      if(HISTORIA_PAGES[nextIdx].type==="ruta-accion") setRutaStep(dir>0?0:RUTA_STEPS.length);
-      setSlideIdx(nextIdx);
-    };
-
-    useEffect(()=>{
-      if(!showHistoria) return;
-      const handler=e=>{
-        if(e.key==="ArrowRight"){e.preventDefault();navigate(1);}
-        else if(e.key==="ArrowLeft"){e.preventDefault();navigate(-1);}
-        else if(e.key==="Escape"){setShowHistoria(false);setSlideIdx(0);}
-      };
-      window.addEventListener("keydown",handler);
-      return ()=>window.removeEventListener("keydown",handler);
-    },[showHistoria,curIdx,rutaStep,HISTORIA_PAGES.length]);
-
-    useEffect(()=>{
-      if(!showHistoria) return;
-      document.body.style.background=G_HERO;
-      return ()=>{document.body.style.background="";};
-    },[showHistoria]);
-
-    if(!showHistoria) return null;
-    const close=()=>{setShowHistoria(false);setSlideIdx(0);};
-    const sortedRecs=[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha));
-    const page=HISTORIA_PAGES[curIdx];
-    const BULLET_META={
-      objetivo:{titulo:"Objetivo Inicial del Proyecto",subtitulo:"¿Por qué nacimos?",items:objetivoInicial,setItems:setObjetivoInicial},
-      descubrimientos:{titulo:"Descubrimientos sobre la marcha",subtitulo:"Aprendizajes",items:descubrimientos,setItems:setDescubrimientos},
-      proyecciones:{titulo:"Proyecciones a futuro",subtitulo:"Lo que viene",items:proyecciones,setItems:setProyecciones},
-    };
-    const navBtn=(dir)=>{
-      const atEdge=dir<0?curIdx===0:curIdx===HISTORIA_PAGES.length-1;
-      const midRuta=page.type==="ruta-accion"&&(dir<0?rutaStep>0:rutaStep<RUTA_STEPS.length);
-      const disabled=atEdge&&!midRuta;
-      return(
-        <button className="hist-nav-btn" onClick={()=>navigate(dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
-      );
-    };
-    return(
-      <div style={{position:"fixed",inset:0,background:G_HERO,zIndex:200,display:"flex",flexDirection:"column",color:WHITE,animation:"histModalIn 0.35s ease"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"1.25rem 2rem",flexShrink:0}}>
-          <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",opacity:0.5}}>Waste Into Value — Nuestra Historia</div>
-          <div style={{display:"flex",alignItems:"center",gap:16}}>
-            <div style={{fontSize:11,fontWeight:700,opacity:0.4,letterSpacing:1}}>{curIdx+1} / {HISTORIA_PAGES.length}</div>
-            <button onClick={close} style={{background:"rgba(255,255,255,0.12)",border:"none",color:WHITE,borderRadius:8,width:32,height:32,fontSize:16,cursor:"pointer"}}>✕</button>
-          </div>
-        </div>
-        <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 2rem 1rem",overflow:"hidden"}}>
-        <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
-          {page.type==="intro"&&(
-            <div style={{textAlign:"center",maxWidth:760}}>
-              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:14}}>Programa de Economía Circular</div>
-              <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
-              <div style={{fontSize:16,opacity:0.7,marginBottom:40,lineHeight:1.6,maxWidth:560,marginLeft:"auto",marginRight:"auto"}}>De residuo plástico a productos con propósito: este es el recorrido del proyecto desde su primera entrega hasta hoy.</div>
-              <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,56px)",flexWrap:"wrap"}}>
-                {[{v:fmt(totalReal),l:"kg transformados"},{v:recs.length,l:"recepciones"},{v:fmt(totalPiezas),l:"piezas creadas"},{v:"+150",l:"personas impactadas"},{v:`${pct}%`,l:"de la meta"}].map((s,i)=>(
-                  <div key={s.l} className="hist-stat" style={{animationDelay:`${0.15+i*0.1}s`}}>
-                    <div style={{fontSize:"clamp(28px,5vw,44px)",fontWeight:900}}>{s.v}</div>
-                    <div style={{fontSize:11,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {["objetivo","descubrimientos","proyecciones"].includes(page.type)&&(()=>{
-            const meta=BULLET_META[page.type];
-            const i=page.i;
-            return(
-              <div style={{maxWidth:760,width:"100%",textAlign:"center"}}>
-                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.5,marginBottom:10}}>{meta.subtitulo}</div>
-                <div style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,marginBottom:36}}>{meta.titulo}</div>
-                {isAdmin
-                  ?<textarea value={meta.items[i]} onChange={e=>meta.setItems(arr=>arr.map((x,j)=>j===i?e.target.value:x))} style={{width:"100%",maxWidth:680,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:18,color:WHITE,fontSize:"clamp(18px,3vw,26px)",fontWeight:700,lineHeight:1.6,padding:"1.75rem",resize:"vertical",minHeight:140,outline:"none",fontFamily:"inherit",textAlign:"center"}}/>
-                  :<div className="hist-stat" style={{fontSize:"clamp(19px,3.4vw,30px)",fontWeight:700,lineHeight:1.65,padding:"2rem 2.5rem",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:20}}>{meta.items[i]}</div>
-                }
-                <div style={{fontSize:12,opacity:0.4,fontWeight:800,letterSpacing:2,marginTop:28}}>{i+1} / {meta.items.length}</div>
-                {isAdmin&&(
-                  <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:16}}>
-                    <button onClick={()=>meta.setItems(arr=>arr.filter((_,j)=>j!==i))} style={{background:"rgba(255,255,255,0.1)",border:"none",color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>🗑 Eliminar punto</button>
-                    <button onClick={()=>meta.setItems(arr=>[...arr,""])} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>+ Agregar punto</button>
-                  </div>
-                )}
-              </div>
-            );
-          })()}
-          {page.type==="ruta-accion"&&(
-            <div style={{maxWidth:760,width:"100%"}}>
-              <RutaAccionDiagram cur={rutaStep} setCur={setRutaStep}/>
-            </div>
-          )}
-          {page.type==="proyecto"&&(
-            <div style={{maxWidth:820,width:"100%"}}>
-              <div style={{textAlign:"center",marginBottom:28}}>
-                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Proyecto</div>
-                <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900}}>Objetivo y Contexto</div>
-              </div>
-              <div style={{fontSize:15,opacity:0.75,lineHeight:1.7,textAlign:"center",maxWidth:680,margin:"0 auto 32px"}}>
-                Crear objetos funcionales y decorativos para las nuevas oficinas de Novo Nordisk México a partir de plumas de inyección recicladas: un entorno de trabajo inspirador que respalda el compromiso de la empresa con la sustentabilidad y la reducción de residuos.
-              </div>
-              <div style={{display:"flex",justifyContent:"center",gap:"clamp(16px,4vw,40px)",flexWrap:"wrap"}}>
-                {[{v:"78%",l:"de residuos se recicla"},{v:"0.3%",l:"a vertederos"},{v:"100%",l:"energía renovable"},{v:"2030",l:"meta cero emisiones CO₂"}].map((s,i)=>(
-                  <div key={s.l} className="hist-stat" style={{animationDelay:`${0.1+i*0.08}s`,background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"1rem 1.25rem",minWidth:130,textAlign:"center"}}>
-                    <div style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900}}>{s.v}</div>
-                    <div style={{fontSize:10,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {page.type==="trayecto"&&(
-            <div style={{maxWidth:980,width:"100%",textAlign:"center"}}>
-              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Trayecto</div>
-              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:36}}>{recs.length} recepciones desde {sortedRecs[0]?.fecha}</div>
-              <div style={{display:"flex",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
-                {sortedRecs.map((r,i)=>(
-                  <div key={r.id} className="hist-stat" style={{animationDelay:`${0.05+i*0.05}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1rem 1.1rem",minWidth:150,maxWidth:200,textAlign:"left"}}>
-                    <div style={{fontSize:11,fontWeight:800,opacity:0.5,letterSpacing:1}}>{r.fecha}</div>
-                    <div style={{fontSize:18,fontWeight:900,marginTop:2}}>{fmt(r.kgReal)} kg</div>
-                    <div style={{fontSize:11,fontWeight:700,opacity:0.55,marginTop:2}}>{r.estado}</div>
-                    {r.transformadoEn&&<div style={{fontSize:11,opacity:0.6,marginTop:6,lineHeight:1.4}}>{r.transformadoEn}</div>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {page.type==="produccion"&&(
-            <div style={{maxWidth:900,width:"100%",textAlign:"center"}}>
-              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Ruta de Acción</div>
-              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>¿Cómo logramos nuestro objetivo?</div>
-              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>De residuo plástico a producto terminado, paso a paso</div>
-              <div style={{display:"flex",justifyContent:"center",gap:10,flexWrap:"wrap"}}>
-                {PROCESO_PRODUCCION.map((e,i)=>(
-                  <div key={i} className="hist-stat" style={{animationDelay:`${0.06+i*0.06}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1.25rem 1rem",minWidth:120,maxWidth:150,position:"relative"}}>
-                    <div style={{position:"absolute",top:8,left:10,fontSize:10,opacity:0.35,fontWeight:800}}>{i+1}</div>
-                    <div style={{fontSize:28,marginBottom:6}}>{PROCESO_ICONS[i]}</div>
-                    <div style={{fontSize:12,fontWeight:800,lineHeight:1.3}}>{e}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {page.type==="piezas"&&(
-            <div style={{maxWidth:860,width:"100%",textAlign:"center"}}>
-              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Lo que hemos creado</div>
-              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>101 piezas creadas</div>
-              <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>a partir de plástico reciclado · +500 kg transformados hasta ahora</div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:14}}>
-                {PIEZAS_HISTORIA.map((p,i)=>(
-                  <div key={p.nombre} className="hist-stat" style={{animationDelay:`${0.06+i*0.05}s`,background:"rgba(255,255,255,0.1)",borderRadius:16,padding:"1.25rem"}}>
-                    <div style={{fontSize:28,marginBottom:8}}>{p.icon}</div>
-                    <div style={{fontSize:28,fontWeight:900}}>{p.cantidad}</div>
-                    <div style={{fontSize:11,opacity:0.6,fontWeight:700,marginTop:4,lineHeight:1.3}}>{p.nombre}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        </div>
-        <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:20,padding:"1.5rem 2rem 2rem",flexShrink:0}}>
-          {navBtn(-1)}
-          <div style={{display:"flex",gap:8}}>
-            {HISTORIA_SECTIONS.map(sec=>{
-              const firstIdx=HISTORIA_PAGES.findIndex(p=>p.type===sec.type);
-              if(firstIdx===-1) return null;
-              const active=page.type===sec.type;
-              return(
-                <div key={sec.type} className="hist-dot" onClick={()=>goTo(firstIdx)} title={sec.label} style={{width:active?28:9,height:9,borderRadius:99,background:active?WHITE:"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.25s"}}/>
-              );
-            })}
-          </div>
-          {navBtn(1)}
-        </div>
-      </div>
-    );
-  };
-
   return(
     <>
       <style>{FONT}</style>
-      <HistoriaModal/>
+      <HistoriaModal showHistoria={showHistoria} setShowHistoria={setShowHistoria} slideIdx={slideIdx} setSlideIdx={setSlideIdx} recs={recs} totalReal={totalReal} totalPiezas={totalPiezas} pct={pct} isAdmin={isAdmin} objetivoInicial={objetivoInicial} setObjetivoInicial={setObjetivoInicial} descubrimientos={descubrimientos} setDescubrimientos={setDescubrimientos} proyecciones={proyecciones} setProyecciones={setProyecciones}/>
       <div style={{minHeight:"100vh",background:BG,color:TEXT}}>
         <div style={{background:G_NAV,padding:"0 2rem",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
           <div style={{display:"flex",alignItems:"center",gap:14}}>
