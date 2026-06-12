@@ -28,6 +28,7 @@ const PIEZAS_HISTORIA=[
 const HISTORIA_SECTIONS=[
   {type:"intro",label:"Inicio"},
   {type:"objetivo",label:"Objetivo"},
+  {type:"ruta-accion",label:"Ruta de Acción"},
   {type:"proyecto",label:"Proyecto"},
   {type:"trayecto",label:"Trayecto"},
   {type:"produccion",label:"Producción"},
@@ -154,6 +155,202 @@ function LineChart({data}){
         {data.map((d,i)=>i%showEvery===0&&(<text key={i} x={xs[i]} y={H-4} textAnchor="middle" fontSize="9" fill={MUTED} fontFamily="Montserrat" fontWeight="700">{d.mes}</text>))}
         {hover!==null&&data[hover].kg>0&&(<g><line x1={xs[hover]} x2={xs[hover]} y1={PT} y2={PT+iH} stroke={BLUE} strokeWidth="1" strokeDasharray="4,3"/><rect x={xs[hover]-30} y={ys[hover]-28} width={60} height={20} rx="6" fill={BLUE}/><text x={xs[hover]} y={ys[hover]-14} textAnchor="middle" fontSize="10" fill={WHITE} fontFamily="Montserrat" fontWeight="800">{data[hover].kg} kg</text></g>)}
       </svg>
+    </div>
+  );
+}
+
+const RUTA_STEPS=[
+  {id:0,x:44,y:36,dy:86,num:"01",lines:["RECEPCIÓN","DE MATERIAL"]},
+  {id:1,x:187,y:36,dy:86,num:"02",lines:["LIMPIEZA Y","DESENSAMBLAJE"]},
+  {id:2,x:330,y:36,dy:86,num:"03",lines:["MOLIENDA"]},
+  {id:3,x:473,y:36,dy:86,num:"04",lines:["PRENSADO"]},
+  {id:4,x:616,y:36,dy:86,num:"05",lines:["DESMOLDEO"]},
+  {id:5,x:84,y:176,dy:226,num:"06",lines:["OBTENCIÓN","DE PLACAS"]},
+  {id:6,x:248,y:176,dy:226,num:"07",lines:["CORTE","EN CNC"]},
+  {id:7,x:412,y:176,dy:226,num:"08",lines:["LIJADO","Y PULIDO"]},
+  {id:8,x:576,y:176,dy:226,num:"09",lines:["ENSAMBLAJE"]},
+];
+const RUTA_SEGS=[
+  {id:"sg0",x1:44,x2:187,y:86,step:1},
+  {id:"sg1",x1:187,x2:330,y:86,step:2},
+  {id:"sg2",x1:330,x2:473,y:86,step:3},
+  {id:"sg3",x1:473,x2:616,y:86,step:4},
+  {id:"sg4",x1:84,x2:248,y:226,step:6},
+  {id:"sg5",x1:248,x2:412,y:226,step:7},
+  {id:"sg6",x1:412,x2:576,y:226,step:8},
+];
+function RutaIcon({idx,lit}){
+  const s=lit?"#fff":"rgba(255,255,255,0.38)";
+  const f=lit?"#fff":"rgba(255,255,255,0.38)";
+  const p={fill:"none",stroke:s,strokeWidth:1.6,strokeLinecap:"round",strokeLinejoin:"round"};
+  if(idx===0) return (
+    <g {...p}>
+      <rect x="-10" y="-6" width="13" height="10" rx="1.2"/>
+      <path d="M3 -4h4l3 4v6H3v-10z"/>
+      <circle cx="-5" cy="5" r="2.2"/><circle cx="7" cy="5" r="2.2"/>
+      <line x1="-10" y1="-1" x2="3" y2="-1"/>
+      <line x1="-14" y1="-4" x2="-10" y2="-4" strokeWidth="1.8"/>
+      <line x1="-14.5" y1="-1" x2="-10" y2="-1" strokeWidth="1.4"/>
+      <line x1="-14" y1="2" x2="-10" y2="2" strokeWidth="1"/>
+    </g>
+  );
+  if(idx===1) return (
+    <g {...p}>
+      <path d="M-2 -11 C-5 -11 -6 -9 -6 -7 L-6 1 C-6 3 -5 4 -3 4 L3 4 C5 4 6 3 6 1 L6 -7 C6 -9 5 -11 3 -11 Z"/>
+      <line x1="-3" y1="-11" x2="-3" y2="-13"/><line x1="0" y1="-11" x2="0" y2="-13"/><line x1="3" y1="-11" x2="3" y2="-13"/>
+      <line x1="-5" y1="-5" x2="5" y2="-5" strokeWidth="0.8"/>
+      <line x1="-5" y1="-1" x2="5" y2="-1" strokeWidth="0.8"/>
+      <path d="M-9 9 Q-5 6 0 7 Q5 6 9 9"/>
+      <circle cx="-6" cy="9" r="0.9" fill={f} stroke="none"/>
+      <circle cx="-2" cy="8" r="0.9" fill={f} stroke="none"/>
+      <circle cx="2" cy="8" r="0.9" fill={f} stroke="none"/>
+      <circle cx="6" cy="9" r="0.9" fill={f} stroke="none"/>
+    </g>
+  );
+  if(idx===2) return (
+    <g>
+      <polygon points="-2,-10 4,-12 7,-6 1,-4 -2,-7" fill={f}/>
+      <polygon points="5,-3 10,-5 11,2 6,3" fill={f}/>
+      <polygon points="-10,-2 -5,-4 -2,3 -8,4 -11,1" fill={f}/>
+      <polygon points="-3,5 4,4 5,10 -2,11 -4,8" fill={f}/>
+    </g>
+  );
+  if(idx===3) return (
+    <g {...p}>
+      <path d="M-6 -11 A2.2 2.2 0 0 1 -1 -11" strokeWidth="1.8"/>
+      <path d="M1 -11 A2.2 2.2 0 0 1 6 -11" strokeWidth="1.8"/>
+      <rect x="-9" y="-10" width="18" height="3" rx="0.8"/>
+      <line x1="-7" y1="-7" x2="-7" y2="9"/>
+      <line x1="7" y1="-7" x2="7" y2="9"/>
+      <path d="M-6 -7 L-6 0 L-3 0 L-3 -2.5 Q0 -4 3 -2.5 L3 0 L6 0 L6 -7"/>
+      <path d="M-6 3 L-6 7 L-3 7 L-3 4.5 Q0 6 3 4.5 L3 7 L6 7 L6 3"/>
+      <rect x="-9" y="8" width="18" height="3" rx="0.8"/>
+      <line x1="-6" y1="9.5" x2="-4" y2="9.5" strokeWidth="1.4"/>
+      <line x1="4" y1="9.5" x2="6" y2="9.5" strokeWidth="1.4"/>
+    </g>
+  );
+  if(idx===4) return (
+    <g {...p}>
+      <path d="M-9 4 L-9 10 L-4 10 L-4 7 L-1 7 L-1 10 L3 10 L3 7 L6 7 L6 10 L10 10 L10 4 Z"/>
+      <g transform="rotate(-20,0,-4)">
+        <path d="M-9 -10 L-9 -4 L-4 -4 L-4 -7 L-1 -7 L-1 -4 L3 -4 L3 -7 L6 -7 L6 -4 L10 -4 L10 -10 Z"/>
+      </g>
+    </g>
+  );
+  if(idx===5) return (
+    <g {...p}>
+      <path d="M0 2 L-8 7 L0 12 L8 7 Z"/>
+      <path d="M-8 7 L-8 10 L0 15 L0 12"/>
+      <path d="M8 7 L8 10 L0 15"/>
+      <line x1="-5" y1="-11" x2="-5" y2="-1" strokeWidth="1.8"/>
+      <polyline points="-8,-3 -5,1 -2,-3" strokeWidth="1.8"/>
+      <line x1="5" y1="-11" x2="5" y2="-1" strokeWidth="1.8"/>
+      <polyline points="2,-3 5,1 8,-3" strokeWidth="1.8"/>
+    </g>
+  );
+  if(idx===6) return (
+    <g {...p}>
+      <rect x="-10" y="-12" width="20" height="3.5" rx="1.8"/>
+      <rect x="-4" y="-8.5" width="8" height="5" rx="1"/>
+      <rect x="-2" y="-3.5" width="4" height="7" rx="1"/>
+      <rect x="-1" y="-2.5" width="2" height="1.8" rx="0.4" strokeWidth="0.7"/>
+      <rect x="-1" y="0.5" width="2" height="1.8" rx="0.4" strokeWidth="0.7"/>
+      <line x1="0" y1="3.5" x2="0" y2="6"/>
+      <line x1="-4" y1="7" x2="-6" y2="9.5" strokeWidth="1.5"/>
+      <line x1="-1.5" y1="7.5" x2="-2" y2="10" strokeWidth="1.5"/>
+      <line x1="1.5" y1="7.5" x2="2" y2="10" strokeWidth="1.5"/>
+      <line x1="4" y1="7" x2="6" y2="9.5" strokeWidth="1.5"/>
+      <rect x="-10" y="10" width="20" height="2.5" rx="1.2"/>
+    </g>
+  );
+  if(idx===7) return (
+    <g {...p}>
+      <path d="M-7 -8 Q-9 -8 -9 -6 L-9 1 Q-9 3 -7 3 L5 3 Q7 3 7 1 L7 -6 Q7 -8 5 -8 Z"/>
+      <rect x="-4" y="-6.5" width="6" height="2" rx="0.8" strokeWidth="0.8"/>
+      <circle cx="0" cy="-1.5" r="1.5" strokeWidth="0.8"/>
+      <rect x="7" y="-4" width="5" height="3.5" rx="1"/>
+      <path d="M-9 -2 Q-11 -2 -11 0 Q-11 2 -9.5 2"/>
+      <rect x="-9" y="3" width="16" height="2.5" rx="1"/>
+      <line x1="-10" y1="7" x2="10" y2="7" strokeWidth="1.2"/>
+      <path d="M-8 10 Q-6 8 -4 10 Q-2 12 0 10 Q2 8 4 10 Q6 12 8 10" strokeWidth="1"/>
+    </g>
+  );
+  if(idx===8) return (
+    <g {...p} strokeWidth="1.8">
+      <path d="M-10 -10 L-10 -3 Q-7 -3 -7 -1 Q-7 1 -10 1 L-10 10 L-1 10 Q-1 7 1 7 Q3 7 3 10 L10 10 L10 1 Q7 1 7 -1 Q7 -3 10 -3 L10 -10 Z"/>
+    </g>
+  );
+  return null;
+}
+function RutaAccionDiagram(){
+  const [cur,setCur]=useState(0);
+  const [auto,setAuto]=useState(null);
+  const total=9;
+  useEffect(()=>()=>{if(auto) clearInterval(auto);},[auto]);
+  const startAuto=()=>{
+    if(auto){clearInterval(auto);setAuto(null);return;}
+    let c=cur>=total?0:cur;
+    if(c===0) setCur(0);
+    const t=setInterval(()=>{
+      c++;
+      setCur(c);
+      if(c>=total){clearInterval(t);setAuto(null);}
+    },950);
+    setAuto(t);
+  };
+  const btn=(style)=>({
+    background:style==="pri"?"#fff":"rgba(255,255,255,0.1)",
+    color:style==="pri"?BLUE:"rgba(255,255,255,0.85)",
+    border:"1px solid rgba(255,255,255,0.2)",
+    borderRadius:8,padding:"7px 16px",fontSize:11,fontWeight:800,
+    cursor:"pointer",fontFamily:"'Montserrat',system-ui",
+  });
+  return (
+    <div style={{background:BLUE,padding:"2.5rem 2rem 1.8rem",borderRadius:12,fontFamily:"'Montserrat',system-ui"}}>
+      <div style={{fontSize:10,fontWeight:800,color:"rgba(255,255,255,0.5)",letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>Novo Nordisk × D·Coder Studio</div>
+      <div style={{fontSize:36,fontWeight:900,color:"#fff",lineHeight:1,marginBottom:3,letterSpacing:-0.5}}>RUTA DE ACCIÓN</div>
+      <div style={{fontSize:10,fontWeight:800,color:"rgba(255,255,255,0.5)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:"2rem"}}>¿Cómo logramos nuestro objetivo?</div>
+      <svg viewBox="0 0 660 310" style={{width:"100%",display:"block"}}>
+        <line x1="44" y1="86" x2="616" y2="86" stroke="rgba(255,255,255,0.12)" strokeWidth="2"/>
+        <line x1="84" y1="226" x2="576" y2="226" stroke="rgba(255,255,255,0.12)" strokeWidth="2"/>
+        {RUTA_SEGS.map(sg=>(
+          <line key={sg.id} x1={sg.x1} y1={sg.y} x2={sg.x2} y2={sg.y}
+            stroke={cur>=sg.step?"#fff":"transparent"} strokeWidth="2" strokeLinecap="round"
+            style={{transition:"stroke 0.4s ease"}}/>
+        ))}
+        {RUTA_STEPS.map(st=>{
+          const on=cur>st.id;
+          const op=on?1:0;
+          return (
+            <g key={st.id} style={{opacity:op,transition:"opacity 0.45s ease"}}>
+              <circle cx={st.x} cy={st.y} r="25"
+                fill={on?"rgba(255,255,255,0.18)":"rgba(255,255,255,0.08)"}
+                stroke={on?"rgba(255,255,255,0.5)":"rgba(255,255,255,0.18)"} strokeWidth="1.5"/>
+              <g transform={`translate(${st.x},${st.y})`}>
+                <RutaIcon idx={st.id} lit={on}/>
+              </g>
+              <circle cx={st.x} cy={st.dy} r="6" fill={on?"#fff":"rgba(255,255,255,0.2)"}
+                style={{transition:"fill 0.3s"}}/>
+              <text x={st.x} y={st.dy+14} textAnchor="middle"
+                style={{fontFamily:"'Montserrat',system-ui",fontSize:8,fontWeight:800,fill:on?"rgba(255,255,255,0.55)":"rgba(255,255,255,0.22)"}}>
+                {st.num}
+              </text>
+              {st.lines.map((ln,li)=>(
+                <text key={li} x={st.x} y={st.dy+25+li*10} textAnchor="middle"
+                  style={{fontFamily:"'Montserrat',system-ui",fontSize:9,fontWeight:800,fill:on?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.3)",letterSpacing:0.4}}>
+                  {ln}
+                </text>
+              ))}
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,marginTop:"1.2rem"}}>
+        <button style={{...btn(),opacity:cur===0?0.35:1}} onClick={()=>setCur(c=>Math.max(0,c-1))}>← Anterior</button>
+        <span style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:800,minWidth:44,textAlign:"center"}}>{cur} / {total}</span>
+        <button style={{...btn("pri"),opacity:cur===total?0.35:1}} onClick={()=>setCur(c=>Math.min(total,c+1))}>Siguiente →</button>
+        <button style={btn()} onClick={startAuto}>{auto?"⏸ Pausar":"▶ Auto"}</button>
+      </div>
     </div>
   );
 }
@@ -396,6 +593,7 @@ export default function App(){
   const HistoriaModal=()=>{
     const HISTORIA_PAGES=[{type:"intro"}];
     objetivoInicial.forEach((_,i)=>HISTORIA_PAGES.push({type:"objetivo",i}));
+    HISTORIA_PAGES.push({type:"ruta-accion"});
     HISTORIA_PAGES.push({type:"proyecto"});
     HISTORIA_PAGES.push({type:"trayecto"});
     HISTORIA_PAGES.push({type:"produccion"});
@@ -478,6 +676,11 @@ export default function App(){
               </div>
             );
           })()}
+          {page.type==="ruta-accion"&&(
+            <div style={{maxWidth:760,width:"100%"}}>
+              <RutaAccionDiagram/>
+            </div>
+          )}
           {page.type==="proyecto"&&(
             <div style={{maxWidth:820,width:"100%"}}>
               <div style={{textAlign:"center",marginBottom:28}}>
