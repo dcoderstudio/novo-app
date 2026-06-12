@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const BLUE="#003E74",BLUE2="#1A5FA8",BLUE_L="#E8F0FA",WHITE="#FFFFFF",BG="#EEF1F8",BORDER="#DDE3EE",TEXT="#0A1628",MUTED="#6B7A99",GREEN="#16A34A",GREEN_BG="#DCFCE7";
 const G_NAV="linear-gradient(135deg,#003E74 0%,#1A5FA8 100%)";
@@ -25,6 +25,16 @@ const PIEZAS_HISTORIA=[
   {nombre:"Reconocimientos",cantidad:76,icon:"🏆"},
   {nombre:"Mural interactivo",cantidad:1,icon:"🖼️"},
   {nombre:"Bote de desechos electrónicos",cantidad:1,icon:"♻️"},
+];
+const HISTORIA_SECTIONS=[
+  {type:"intro",label:"Inicio"},
+  {type:"objetivo",label:"Objetivo"},
+  {type:"proyecto",label:"Proyecto"},
+  {type:"trayecto",label:"Trayecto"},
+  {type:"produccion",label:"Producción"},
+  {type:"piezas",label:"Piezas"},
+  {type:"descubrimientos",label:"Descubrimientos"},
+  {type:"proyecciones",label:"Proyecciones"},
 ];
 const fmt=n=>Number(n).toLocaleString("es-MX");
 
@@ -281,51 +291,56 @@ export default function App(){
     );
   };
 
-  const ListaEditable=({titulo,subtitulo,icon,items,setItems})=>(
-    <div style={{maxWidth:680,width:"100%"}}>
-      <div style={{textAlign:"center",marginBottom:28}}>
-        <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>{subtitulo}</div>
-        <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900}}>{titulo}</div>
-      </div>
-      <div style={{maxHeight:"50vh",overflowY:"auto",paddingRight:4}}>
-        {items.map((it,i)=>(
-          <div key={i} style={{display:"flex",gap:12,alignItems:"flex-start",background:"rgba(255,255,255,0.08)",borderRadius:12,padding:"12px 16px",marginBottom:10}}>
-            <span style={{fontSize:18,flexShrink:0}}>{icon}</span>
-            {isAdmin
-              ?<textarea value={it} onChange={e=>setItems(arr=>arr.map((x,j)=>j===i?e.target.value:x))} style={{flex:1,background:"transparent",border:"none",color:WHITE,fontSize:14,fontWeight:600,lineHeight:1.5,resize:"vertical",minHeight:40,outline:"none",fontFamily:"inherit"}}/>
-              :<div style={{flex:1,fontSize:14,fontWeight:600,lineHeight:1.5}}>{it}</div>
-            }
-            {isAdmin&&<button onClick={()=>setItems(arr=>arr.filter((_,j)=>j!==i))} style={{background:"rgba(255,255,255,0.1)",border:"none",color:WHITE,borderRadius:6,width:26,height:26,cursor:"pointer",fontSize:12,flexShrink:0}}>🗑</button>}
-          </div>
-        ))}
-      </div>
-      {isAdmin&&<button onClick={()=>setItems(arr=>[...arr,""])} style={{marginTop:12,background:"rgba(255,255,255,0.15)",border:`1px solid rgba(255,255,255,0.25)`,color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>+ Agregar punto</button>}
-    </div>
-  );
-
-  const HISTORIA_SLIDES=["intro","objetivo","proyecto","trayecto","produccion","piezas","descubrimientos","proyecciones"];
-
   const HistoriaModal=()=>{
+    const HISTORIA_PAGES=[{type:"intro"}];
+    objetivoInicial.forEach((_,i)=>HISTORIA_PAGES.push({type:"objetivo",i}));
+    HISTORIA_PAGES.push({type:"proyecto"});
+    HISTORIA_PAGES.push({type:"trayecto"});
+    HISTORIA_PAGES.push({type:"produccion"});
+    HISTORIA_PAGES.push({type:"piezas"});
+    descubrimientos.forEach((_,i)=>HISTORIA_PAGES.push({type:"descubrimientos",i}));
+    proyecciones.forEach((_,i)=>HISTORIA_PAGES.push({type:"proyecciones",i}));
+    const curIdx=Math.max(0,Math.min(slideIdx,HISTORIA_PAGES.length-1));
+    const goTo=i=>setSlideIdx(Math.max(0,Math.min(HISTORIA_PAGES.length-1,i)));
+
+    useEffect(()=>{
+      if(!showHistoria) return;
+      const handler=e=>{
+        if(e.key==="ArrowRight"){e.preventDefault();goTo(curIdx+1);}
+        else if(e.key==="ArrowLeft"){e.preventDefault();goTo(curIdx-1);}
+        else if(e.key==="Escape"){setShowHistoria(false);setSlideIdx(0);}
+      };
+      window.addEventListener("keydown",handler);
+      return ()=>window.removeEventListener("keydown",handler);
+    },[showHistoria,curIdx,HISTORIA_PAGES.length]);
+
     if(!showHistoria) return null;
     const close=()=>{setShowHistoria(false);setSlideIdx(0);};
-    const goTo=i=>setSlideIdx(Math.max(0,Math.min(HISTORIA_SLIDES.length-1,i)));
-    const slide=HISTORIA_SLIDES[slideIdx];
     const sortedRecs=[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha));
+    const page=HISTORIA_PAGES[curIdx];
+    const BULLET_META={
+      objetivo:{titulo:"Objetivo Inicial del Proyecto",subtitulo:"¿Por qué nacimos?",items:objetivoInicial,setItems:setObjetivoInicial},
+      descubrimientos:{titulo:"Descubrimientos sobre la marcha",subtitulo:"Aprendizajes",items:descubrimientos,setItems:setDescubrimientos},
+      proyecciones:{titulo:"Proyecciones a futuro",subtitulo:"Lo que viene",items:proyecciones,setItems:setProyecciones},
+    };
     const navBtn=(dir)=>{
-      const disabled=dir<0?slideIdx===0:slideIdx===HISTORIA_SLIDES.length-1;
+      const disabled=dir<0?curIdx===0:curIdx===HISTORIA_PAGES.length-1;
       return(
-        <button className="hist-nav-btn" onClick={()=>goTo(slideIdx+dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
+        <button className="hist-nav-btn" onClick={()=>goTo(curIdx+dir)} disabled={disabled} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:"50%",width:44,height:44,fontSize:18,cursor:disabled?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:disabled?0.3:1,flexShrink:0}}>{dir<0?"←":"→"}</button>
       );
     };
     return(
       <div style={{position:"fixed",inset:0,background:G_HERO,zIndex:200,display:"flex",flexDirection:"column",color:WHITE,animation:"histModalIn 0.35s ease"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"1.25rem 2rem",flexShrink:0}}>
           <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",opacity:0.5}}>Waste Into Value — Nuestra Historia</div>
-          <button onClick={close} style={{background:"rgba(255,255,255,0.12)",border:"none",color:WHITE,borderRadius:8,width:32,height:32,fontSize:16,cursor:"pointer"}}>✕</button>
+          <div style={{display:"flex",alignItems:"center",gap:16}}>
+            <div style={{fontSize:11,fontWeight:700,opacity:0.4,letterSpacing:1}}>{curIdx+1} / {HISTORIA_PAGES.length}</div>
+            <button onClick={close} style={{background:"rgba(255,255,255,0.12)",border:"none",color:WHITE,borderRadius:8,width:32,height:32,fontSize:16,cursor:"pointer"}}>✕</button>
+          </div>
         </div>
         <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 2rem 1rem",overflow:"hidden"}}>
-        <div key={slideIdx} className="hist-slide" style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
-          {slide==="intro"&&(
+        <div key={curIdx} className="hist-slide" style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          {page.type==="intro"&&(
             <div style={{textAlign:"center",maxWidth:760}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:14}}>Programa de Economía Circular</div>
               <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
@@ -340,8 +355,28 @@ export default function App(){
               </div>
             </div>
           )}
-          {slide==="objetivo"&&<ListaEditable titulo="Objetivo Inicial del Proyecto" subtitulo="¿Por qué nacimos?" icon="🎯" items={objetivoInicial} setItems={setObjetivoInicial}/>}
-          {slide==="proyecto"&&(
+          {["objetivo","descubrimientos","proyecciones"].includes(page.type)&&(()=>{
+            const meta=BULLET_META[page.type];
+            const i=page.i;
+            return(
+              <div style={{maxWidth:760,width:"100%",textAlign:"center"}}>
+                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.5,marginBottom:10}}>{meta.subtitulo}</div>
+                <div style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,marginBottom:36}}>{meta.titulo}</div>
+                {isAdmin
+                  ?<textarea value={meta.items[i]} onChange={e=>meta.setItems(arr=>arr.map((x,j)=>j===i?e.target.value:x))} style={{width:"100%",maxWidth:680,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:18,color:WHITE,fontSize:"clamp(18px,3vw,26px)",fontWeight:700,lineHeight:1.6,padding:"1.75rem",resize:"vertical",minHeight:140,outline:"none",fontFamily:"inherit",textAlign:"center"}}/>
+                  :<div className="hist-stat" style={{fontSize:"clamp(19px,3.4vw,30px)",fontWeight:700,lineHeight:1.65,padding:"2rem 2.5rem",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:20}}>{meta.items[i]}</div>
+                }
+                <div style={{fontSize:12,opacity:0.4,fontWeight:800,letterSpacing:2,marginTop:28}}>{i+1} / {meta.items.length}</div>
+                {isAdmin&&(
+                  <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:16}}>
+                    <button onClick={()=>meta.setItems(arr=>arr.filter((_,j)=>j!==i))} style={{background:"rgba(255,255,255,0.1)",border:"none",color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>🗑 Eliminar punto</button>
+                    <button onClick={()=>meta.setItems(arr=>[...arr,""])} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>+ Agregar punto</button>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+          {page.type==="proyecto"&&(
             <div style={{maxWidth:820,width:"100%"}}>
               <div style={{textAlign:"center",marginBottom:28}}>
                 <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Proyecto</div>
@@ -360,30 +395,23 @@ export default function App(){
               </div>
             </div>
           )}
-          {slide==="trayecto"&&(
-            <div style={{maxWidth:760,width:"100%",height:"100%",display:"flex",flexDirection:"column"}}>
-              <div style={{textAlign:"center",marginBottom:8,flexShrink:0}}>
-                <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Trayecto</div>
-                <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900}}>{recs.length} recepciones desde {sortedRecs[0]?.fecha}</div>
-              </div>
-              <div style={{flex:1,overflowY:"auto",marginTop:24,paddingRight:8}}>
+          {page.type==="trayecto"&&(
+            <div style={{maxWidth:980,width:"100%",textAlign:"center"}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>El Trayecto</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:36}}>{recs.length} recepciones desde {sortedRecs[0]?.fecha}</div>
+              <div style={{display:"flex",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
                 {sortedRecs.map((r,i)=>(
-                  <div key={r.id} style={{display:"flex",gap:16}}>
-                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:0}}>
-                      <div style={{width:12,height:12,borderRadius:"50%",background:WHITE,marginTop:6}}/>
-                      {i<sortedRecs.length-1&&<div style={{width:2,flex:1,background:"rgba(255,255,255,0.2)"}}/>}
-                    </div>
-                    <div style={{paddingBottom:22}}>
-                      <div style={{fontSize:12,fontWeight:800,opacity:0.5,letterSpacing:1}}>{r.fecha}</div>
-                      <div style={{fontSize:19,fontWeight:900,marginTop:2}}>{fmt(r.kgReal)} kg <span style={{fontSize:12,fontWeight:700,opacity:0.5}}>· {r.estado}</span></div>
-                      {r.transformadoEn&&<div style={{fontSize:13,opacity:0.65,marginTop:4,lineHeight:1.5}}>{r.transformadoEn}</div>}
-                    </div>
+                  <div key={r.id} className="hist-stat" style={{animationDelay:`${0.05+i*0.05}s`,background:"rgba(255,255,255,0.1)",borderRadius:14,padding:"1rem 1.1rem",minWidth:150,maxWidth:200,textAlign:"left"}}>
+                    <div style={{fontSize:11,fontWeight:800,opacity:0.5,letterSpacing:1}}>{r.fecha}</div>
+                    <div style={{fontSize:18,fontWeight:900,marginTop:2}}>{fmt(r.kgReal)} kg</div>
+                    <div style={{fontSize:11,fontWeight:700,opacity:0.55,marginTop:2}}>{r.estado}</div>
+                    {r.transformadoEn&&<div style={{fontSize:11,opacity:0.6,marginTop:6,lineHeight:1.4}}>{r.transformadoEn}</div>}
                   </div>
                 ))}
               </div>
             </div>
           )}
-          {slide==="produccion"&&(
+          {page.type==="produccion"&&(
             <div style={{maxWidth:900,width:"100%",textAlign:"center"}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Ruta de Acción</div>
               <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>¿Cómo logramos nuestro objetivo?</div>
@@ -399,7 +427,7 @@ export default function App(){
               </div>
             </div>
           )}
-          {slide==="piezas"&&(
+          {page.type==="piezas"&&(
             <div style={{maxWidth:860,width:"100%",textAlign:"center"}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Lo que hemos creado</div>
               <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>101 piezas creadas</div>
@@ -415,16 +443,19 @@ export default function App(){
               </div>
             </div>
           )}
-          {slide==="descubrimientos"&&<ListaEditable titulo="Descubrimientos sobre la marcha" subtitulo="Aprendizajes" icon="💡" items={descubrimientos} setItems={setDescubrimientos}/>}
-          {slide==="proyecciones"&&<ListaEditable titulo="Proyecciones a futuro" subtitulo="Lo que viene" icon="🚀" items={proyecciones} setItems={setProyecciones}/>}
         </div>
         </div>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:20,padding:"1.5rem 2rem 2rem",flexShrink:0}}>
           {navBtn(-1)}
           <div style={{display:"flex",gap:8}}>
-            {HISTORIA_SLIDES.map((s,i)=>(
-              <div key={s} className="hist-dot" onClick={()=>goTo(i)} style={{width:i===slideIdx?28:9,height:9,borderRadius:99,background:i===slideIdx?WHITE:"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.25s"}}/>
-            ))}
+            {HISTORIA_SECTIONS.map(sec=>{
+              const firstIdx=HISTORIA_PAGES.findIndex(p=>p.type===sec.type);
+              if(firstIdx===-1) return null;
+              const active=page.type===sec.type;
+              return(
+                <div key={sec.type} className="hist-dot" onClick={()=>goTo(firstIdx)} title={sec.label} style={{width:active?28:9,height:9,borderRadius:99,background:active?WHITE:"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.25s"}}/>
+              );
+            })}
           </div>
           {navBtn(1)}
         </div>
