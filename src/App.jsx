@@ -162,7 +162,7 @@ export default function App(){
   const [recs,setRecs]=useState(RECEPCIONES_INIT);
   const [pedidos,setPedidos]=useState(PEDIDOS_INIT);
   const [detalle,setDetalle]=useState(DETALLE_INIT);
-  const [metaKg,setMetaKg]=useState(2000);
+  const [metaKg,setMetaKg]=useState(3000);
   const [tab,setTab]=useState("inicio");
   const [yrFilter,setYrFilter]=useState("Todo");
   const [isAdmin,setIsAdmin]=useState(false);
@@ -218,13 +218,13 @@ export default function App(){
   const totalBruto=recs.reduce((s,r)=>s+Number(r.kgBruto),0);
   const totalReal=recs.reduce((s,r)=>s+Number(r.kgReal),0);
   const totalPiezas=Object.values(detalle).reduce((s,arr)=>s+arr.reduce((a,p)=>a+p.cantidad,0),0);
-  const pct=Math.min(100,Math.round((totalReal/metaKg)*100));
   const kgPorEstado=estado=>recs.filter(r=>r.estado===estado).reduce((s,r)=>s+Number(r.kgReal),0);
   const enPlacasKg=kgPorEstado("En Placas");
   const transformadoKg=recs.reduce((s,r)=>{
     if((r.desglose||[]).length>0) return s+r.desglose.reduce((a,d)=>a+(d.estado==="Transformado"?Number(d.cantidad||0):0),0);
     return s+(r.estado==="Transformado"?Number(r.kgReal):0);
   },0);
+  const pct=Math.min(100,Math.round((transformadoKg/metaKg)*100));
   const totalAsignado=recs.reduce((s,r)=>s+(r.desglose||[]).reduce((a,d)=>a+Number(d.cantidad||0),0),0);
   const libreKg=totalReal-totalAsignado;
 
@@ -620,10 +620,10 @@ export default function App(){
                   </div>
                 )}
                 <div style={{display:"flex",alignItems:"flex-end",gap:16,marginBottom:16,flexWrap:"wrap"}}>
-                  <div style={{fontSize:64,fontWeight:900,color:WHITE,lineHeight:1}}>{fmt(totalReal)}</div>
+                  <div style={{fontSize:64,fontWeight:900,color:WHITE,lineHeight:1}}>{fmt(transformadoKg)}</div>
                   <div style={{paddingBottom:8}}>
                     <div style={{fontSize:20,fontWeight:700,color:"rgba(255,255,255,0.45)"}}>/ {fmt(metaKg)} kg</div>
-                    <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",fontWeight:600}}>kilogramos transformados</div>
+                    <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",fontWeight:600}}>kg Transformado - Entregado</div>
                   </div>
                   <div style={{marginLeft:"auto",paddingBottom:4}}>
                     <div style={{fontSize:56,fontWeight:900,color:WHITE,lineHeight:1,textAlign:"right"}}>{pct}<span style={{fontSize:28}}>%</span></div>
