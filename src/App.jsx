@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const BLUE="#003E74",BLUE2="#1A5FA8",BLUE_L="#E8F0FA",WHITE="#FFFFFF",BG="#EEF1F8",BORDER="#DDE3EE",TEXT="#0A1628",MUTED="#6B7A99",GREEN="#16A34A",GREEN_BG="#DCFCE7",PASS="dcoder2026";
+const BLUE="#003E74",BLUE2="#1A5FA8",BLUE_L="#E8F0FA",WHITE="#FFFFFF",BG="#EEF1F8",BORDER="#DDE3EE",TEXT="#0A1628",MUTED="#6B7A99",GREEN="#16A34A",GREEN_BG="#DCFCE7";
 const G_NAV="linear-gradient(135deg,#003E74 0%,#1A5FA8 100%)";
 const G_HERO="linear-gradient(135deg,#002D5C 0%,#1A5FA8 60%,#2176C2 100%)";
 const G_BLUE="linear-gradient(135deg,#003E74 0%,#1565C0 100%)";
@@ -52,7 +52,6 @@ const DETALLE_INIT={
   ],
 };
 
-const inp={width:"100%",padding:"7px 10px",borderRadius:8,border:`1.5px solid ${BLUE}`,fontSize:12,fontWeight:600,outline:"none",background:WHITE};
 const inpSm={padding:"5px 8px",borderRadius:6,border:`1.5px solid ${BLUE}`,fontSize:12,fontWeight:600,outline:"none",background:WHITE,width:"100%"};
 
 function EstadoBadge({estado}){
@@ -100,9 +99,6 @@ export default function App(){
   const [tab,setTab]=useState("inicio");
   const [yrFilter,setYrFilter]=useState("Todo");
   const [isAdmin,setIsAdmin]=useState(false);
-  const [pw,setPw]=useState("");
-  const [pwErr,setPwErr]=useState(false);
-  const [showLogin,setShowLogin]=useState(false);
   const [piezaTab,setPiezaTab]=useState(null);
   const [editRecId,setEditRecId]=useState(null);
   const [editRecData,setEditRecData]=useState(null);
@@ -133,7 +129,6 @@ export default function App(){
   const acColor=yrFilter==="2025"?BLUE2:yrFilter==="2026"?GREEN:BLUE;
   const acGrad=yrFilter==="2025"?"linear-gradient(135deg,#1A5FA8,#2176C2)":yrFilter==="2026"?G_GREEN:G_BLUE;
 
-  const login=()=>{if(pw===PASS){setIsAdmin(true);setShowLogin(false);setPwErr(false);setPw("");}else setPwErr(true);};
   const exitAdmin=()=>{setIsAdmin(false);setEditRecId(null);setEditPedId(null);setShowNewRec(false);setShowNewPed(false);setEditMeta(false);};
 
   const saveRec=(d)=>{
@@ -228,26 +223,9 @@ export default function App(){
     </div>
   );
 
-  const LoginModal=()=>showLogin?(
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100}}>
-      <div style={{background:WHITE,borderRadius:20,padding:"2.5rem",width:320,textAlign:"center"}}>
-        <div style={{width:48,height:48,background:BLUE_L,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 1rem",fontSize:20}}>🔒</div>
-        <div style={{fontSize:18,fontWeight:800,color:TEXT,marginBottom:4}}>Acceso Admin</div>
-        <div style={{fontSize:12,color:MUTED,marginBottom:16}}>Solo para D·Coder Studio</div>
-        <input style={{...inp,marginBottom:6,fontSize:13}} type="password" placeholder="Contraseña" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()}/>
-        {pwErr&&<div style={{color:"#DC2626",fontSize:11,marginBottom:6}}>Contraseña incorrecta</div>}
-        <div style={{display:"flex",gap:8,marginTop:8}}>
-          <button style={{flex:1,background:G_BLUE,color:WHITE,border:"none",borderRadius:8,padding:"9px",fontSize:13,fontWeight:700,cursor:"pointer"}} onClick={login}>Entrar</button>
-          <button style={{flex:1,background:BG,border:"none",borderRadius:8,padding:"9px",fontSize:12,fontWeight:600,cursor:"pointer",color:TEXT}} onClick={()=>{setShowLogin(false);setPwErr(false);setPw("");}}>Cancelar</button>
-        </div>
-      </div>
-    </div>
-  ):null;
-
   return(
     <>
       <style>{FONT}</style>
-      <LoginModal/>
       <div style={{minHeight:"100vh",background:BG,color:TEXT}}>
         <div style={{background:G_NAV,padding:"0 2rem",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
           <div style={{display:"flex",alignItems:"center",gap:14}}>
@@ -255,7 +233,7 @@ export default function App(){
             <div style={{color:"rgba(255,255,255,0.5)",fontSize:10,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>Programa de Economía Circular</div>
           </div>
           {!isAdmin
-            ?<button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>setShowLogin(true)}>⚙ Admin</button>
+            ?<button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>setIsAdmin(true)}>⚙ Admin</button>
             :<div style={{display:"flex",alignItems:"center",gap:8}}>
                <span style={{color:"#FDE68A",fontSize:11,fontWeight:700}}>✏️ Editando</span>
                <button style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",color:WHITE,borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={exitAdmin}>Salir</button>
