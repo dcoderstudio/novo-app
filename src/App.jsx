@@ -352,7 +352,7 @@ function RutaAccionDiagram({cur,setCur}){
 
 function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,totalReal,totalPiezas,pct,isAdmin,objetivoInicial,setObjetivoInicial,descubrimientos,setDescubrimientos,proyecciones,setProyecciones}){
     const HISTORIA_PAGES=[{type:"intro"}];
-    objetivoInicial.forEach((_,i)=>HISTORIA_PAGES.push({type:"objetivo",i}));
+    HISTORIA_PAGES.push({type:"objetivo"});
     HISTORIA_PAGES.push({type:"ruta-accion"});
     HISTORIA_PAGES.push({type:"proyecto"});
     HISTORIA_PAGES.push({type:"trayecto"});
@@ -401,7 +401,6 @@ function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,t
     const sortedRecs=[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha));
     const page=HISTORIA_PAGES[curIdx];
     const BULLET_META={
-      objetivo:{titulo:"Objetivo Inicial del Proyecto",subtitulo:"¿Por qué nacimos?",items:objetivoInicial,setItems:setObjetivoInicial},
       descubrimientos:{titulo:"Descubrimientos sobre la marcha",subtitulo:"Aprendizajes",items:descubrimientos,setItems:setDescubrimientos},
       proyecciones:{titulo:"Proyecciones a futuro",subtitulo:"Lo que viene",items:proyecciones,setItems:setProyecciones},
     };
@@ -439,7 +438,32 @@ function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,t
               </div>
             </div>
           )}
-          {["objetivo","descubrimientos","proyecciones"].includes(page.type)&&(()=>{
+          {page.type==="objetivo"&&(
+            <div style={{maxWidth:760,width:"100%",textAlign:"center"}}>
+              <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.5,marginBottom:10}}>¿Por qué nacimos?</div>
+              <div style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,marginBottom:32}}>Objetivo Inicial del Proyecto</div>
+              <div style={{display:"flex",flexDirection:"column",gap:14}}>
+                {objetivoInicial.map((txt,i)=>(
+                  <div key={i} className="hist-stat" style={{animationDelay:`${0.1+i*0.1}s`,display:"flex",alignItems:"flex-start",gap:16,textAlign:"left",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:18,padding:"1.25rem 1.5rem"}}>
+                    <div style={{flexShrink:0,width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900}}>{i+1}</div>
+                    {isAdmin
+                      ?<div style={{flex:1,display:"flex",flexDirection:"column",gap:8}}>
+                         <textarea value={txt} onChange={e=>setObjetivoInicial(arr=>arr.map((x,j)=>j===i?e.target.value:x))} style={{width:"100%",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:12,color:WHITE,fontSize:15,fontWeight:600,lineHeight:1.6,padding:"0.85rem 1rem",resize:"vertical",minHeight:80,outline:"none",fontFamily:"inherit"}}/>
+                         <button onClick={()=>setObjetivoInicial(arr=>arr.filter((_,j)=>j!==i))} style={{alignSelf:"flex-end",background:"rgba(255,255,255,0.1)",border:"none",color:WHITE,borderRadius:8,padding:"6px 12px",fontSize:11,fontWeight:700,cursor:"pointer"}}>🗑 Eliminar</button>
+                       </div>
+                      :<div style={{fontSize:"clamp(15px,2vw,18px)",fontWeight:600,lineHeight:1.65,paddingTop:4}}>{txt}</div>
+                    }
+                  </div>
+                ))}
+              </div>
+              {isAdmin&&(
+                <div style={{marginTop:18}}>
+                  <button onClick={()=>setObjetivoInicial(arr=>[...arr,""])} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.25)",color:WHITE,borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>+ Agregar punto</button>
+                </div>
+              )}
+            </div>
+          )}
+          {["descubrimientos","proyecciones"].includes(page.type)&&(()=>{
             const meta=BULLET_META[page.type];
             const i=page.i;
             return(
@@ -589,11 +613,8 @@ export default function App(){
   const [showHistoria,setShowHistoria]=useState(false);
   const [slideIdx,setSlideIdx]=useState(0);
   const [objetivoInicial,setObjetivoInicial]=useState([
-    "Desarrollar objetos funcionales y decorativos para Novo Nordisk México mediante la transformación de plumas de inyección recicladas.",
-    "Crear productos de alto valor estético y funcional que demuestren el potencial del material recuperado.",
-    "Ofrecer aplicaciones útiles, duraderas y representativas de la marca.",
-    "Cambiar el destino de estas plumas una vez concluida su función original, extendiendo la vida útil del material mediante su incorporación en nuevos productos con propósito.",
-    "Promover un modelo de economía circular que transforma un residuo en un recurso valioso.",
+    "Transformar las plumas de inyección recicladas de Novo Nordisk México en objetos funcionales y decorativos de alto valor estético: aplicaciones útiles, duraderas y representativas de la marca.",
+    "Extender la vida útil del material una vez concluida su función original, incorporándolo en nuevos productos con propósito — la esencia de la economía circular: convertir un residuo en un recurso valioso.",
     "Fortalecer el compromiso de Novo Nordisk con la sustentabilidad, la reducción de residuos y la generación de impacto positivo a través del diseño.",
   ]);
   const [descubrimientos,setDescubrimientos]=useState([
