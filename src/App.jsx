@@ -136,6 +136,14 @@ export default function App(){
   const [newPiezaData,setNewPiezaData]=useState({nombre:"",cantidad:1,kgPieza:0,imagen:""});
   const [showHistoria,setShowHistoria]=useState(false);
   const [slideIdx,setSlideIdx]=useState(0);
+  const [objetivoInicial,setObjetivoInicial]=useState([
+    "Desarrollar objetos funcionales y decorativos para Novo Nordisk México mediante la transformación de plumas de inyección recicladas.",
+    "Crear productos de alto valor estético y funcional que demuestren el potencial del material recuperado.",
+    "Ofrecer aplicaciones útiles, duraderas y representativas de la marca.",
+    "Cambiar el destino de estas plumas una vez concluida su función original, extendiendo la vida útil del material mediante su incorporación en nuevos productos con propósito.",
+    "Promover un modelo de economía circular que transforma un residuo en un recurso valioso.",
+    "Fortalecer el compromiso de Novo Nordisk con la sustentabilidad, la reducción de residuos y la generación de impacto positivo a través del diseño.",
+  ]);
   const [descubrimientos,setDescubrimientos]=useState([
     "Desperdicio mínimo del material: las piezas que sobran o se descartan se pueden volver a moler y prensar de nuevo, y el polvo también se reutiliza — prácticamente cero desperdicio.",
     "Alta resistencia estructural con refuerzo metálico y uniones mecánicas: usamos varilla metálica reciclada de alta resistencia y tuercas en las uniones.",
@@ -295,7 +303,7 @@ export default function App(){
     </div>
   );
 
-  const HISTORIA_SLIDES=["intro","proyecto","trayecto","produccion","piezas","descubrimientos","proyecciones"];
+  const HISTORIA_SLIDES=["intro","objetivo","proyecto","trayecto","produccion","piezas","descubrimientos","proyecciones"];
 
   const HistoriaModal=()=>{
     if(!showHistoria) return null;
@@ -332,6 +340,7 @@ export default function App(){
               </div>
             </div>
           )}
+          {slide==="objetivo"&&<ListaEditable titulo="Objetivo Inicial del Proyecto" subtitulo="¿Por qué nacimos?" icon="🎯" items={objetivoInicial} setItems={setObjetivoInicial}/>}
           {slide==="proyecto"&&(
             <div style={{maxWidth:820,width:"100%"}}>
               <div style={{textAlign:"center",marginBottom:28}}>
