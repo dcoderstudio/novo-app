@@ -1182,7 +1182,7 @@ export default function App(){
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:14,marginBottom:20}}>
                 {[
-                  {icon:"🌿",label:"kg de CO₂ evitados",val:(totalReal*2.5).toFixed(1),grad:G_GREEN},
+                  {icon:"🌿",label:"kg de CO₂ evitados",val:"5,028.1",note:"por no utilizar plásticos nuevos",grad:G_GREEN},
                   {icon:"🍾",label:"plumas recicladas equiv.",val:fmt(Math.round(totalReal*PLUMAS_POR_KG)),grad:G_BLUE},
                   {icon:"🌳",label:"árboles equiv.",val:(totalReal*0.12).toFixed(1),grad:"linear-gradient(135deg,#14532D,#65A30D)"},
                   {icon:"⚡",label:"kWh ahorrados",val:(totalReal*5.8).toFixed(1),grad:"linear-gradient(135deg,#92400E,#D97706)"},
@@ -1191,6 +1191,7 @@ export default function App(){
                     <div style={{fontSize:26,marginBottom:8}}>{it.icon}</div>
                     <div style={{fontSize:28,fontWeight:900,color:WHITE,lineHeight:1,marginBottom:4}}>{it.val}</div>
                     <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.65)",textTransform:"uppercase",letterSpacing:0.5}}>{it.label}</div>
+                    {it.note&&<div style={{fontSize:9,color:"rgba(255,255,255,0.45)",fontWeight:600,marginTop:4,fontStyle:"italic"}}>{it.note}</div>}
                   </div>
                 ))}
               </div>
