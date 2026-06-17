@@ -1184,8 +1184,6 @@ export default function App(){
                 {[
                   {icon:"🌿",label:"kg de CO₂ evitados",val:"5,028.1",note:"por no utilizar plásticos nuevos",grad:G_GREEN},
                   {icon:"🍾",label:"plumas recicladas equiv.",val:fmt(Math.round(totalReal*PLUMAS_POR_KG)),grad:G_BLUE},
-                  {icon:"🌳",label:"árboles equiv.",val:(totalReal*0.12).toFixed(1),grad:"linear-gradient(135deg,#14532D,#65A30D)"},
-                  {icon:"⚡",label:"kWh ahorrados",val:(totalReal*5.8).toFixed(1),grad:"linear-gradient(135deg,#92400E,#D97706)"},
                 ].map(it=>(
                   <div key={it.label} style={{background:it.grad,borderRadius:16,padding:"1.25rem",boxShadow:"0 4px 16px rgba(0,0,0,0.13)"}}>
                     <div style={{fontSize:26,marginBottom:8}}>{it.icon}</div>
