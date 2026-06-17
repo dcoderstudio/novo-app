@@ -10,7 +10,7 @@ const PIEZAS_TIPOS=["Mobiliario","Llaveros","Portapapeles","Otros"];
 const PIEZAS_ICONS=["🪑","🔑","📋","✨"];
 const PIEZAS_COLORS=[BLUE,BLUE2,"#7C3AED","#0891B2"];
 const PIEZAS_GRADS=["linear-gradient(135deg,#002D5C,#1A5FA8)","linear-gradient(135deg,#1A5FA8,#2176C2)","linear-gradient(135deg,#4C1D95,#7C3AED)","linear-gradient(135deg,#0891B2,#22D3EE)"];
-const KG_POR_PLUMA=0.04;
+const PLUMAS_POR_KG=45;
 const ETAPAS=["Recepción","Limpieza","Molienda","Placas","Corte","Ensamble","Entregado","Facturado","Pagado"];
 const PROCESO_PRODUCCION=["Recolección","Triturado","Fabricación de molde en CNC","Prensado y vulcanización","Desmoldeo","Aplanado","Corte en CNC","Lijado y pulido","Armado"];
 const PROCESO_ICONS=["🚚","🔨","🛠️","🔥","📤","🟦","✂️","✨","🧩"];
@@ -891,9 +891,9 @@ export default function App(){
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:14,marginBottom:20}}>
                 {[
-                  {label:"KG brutos recibidos",val:fmt(totalBruto),unit:"kg",grad:G_BLUE},
-                  {label:"KG reales netos",val:fmt(totalReal),unit:"kg",grad:"linear-gradient(135deg,#1A5FA8,#2176C2)"},
-                  {label:"Transformado - Entregado",val:fmt(transformadoKg),unit:"kg",grad:G_GREEN},
+                  {label:"KG brutos recibidos",val:fmt(totalBruto),unit:"kg",plumas:fmt(Math.round(totalBruto*PLUMAS_POR_KG)),grad:G_BLUE},
+                  {label:"KG reales netos",val:fmt(totalReal),unit:"kg",plumas:fmt(Math.round(totalReal*PLUMAS_POR_KG)),grad:"linear-gradient(135deg,#1A5FA8,#2176C2)"},
+                  {label:"Transformado - Entregado",val:fmt(transformadoKg),unit:"kg",plumas:fmt(Math.round(transformadoKg*PLUMAS_POR_KG)),grad:G_GREEN},
                   {label:"Recepciones",val:recs.length,unit:"lotes",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Piezas creadas",val:"344",unit:"piezas",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Proyectos activos",val:"2",unit:"en proceso",grad:G_GREEN},
@@ -902,6 +902,7 @@ export default function App(){
                     <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{k.label}</div>
                     <div style={{fontSize:30,fontWeight:900,color:WHITE,lineHeight:1}}>{k.val}</div>
                     <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontWeight:600,marginTop:4}}>{k.unit}</div>
+                    {k.plumas&&<div style={{fontSize:10,color:"rgba(255,255,255,0.5)",fontWeight:700,marginTop:5,borderTop:"1px solid rgba(255,255,255,0.15)",paddingTop:5}}>≈ {k.plumas} plumas</div>}
                   </div>
                 ))}
               </div>
@@ -911,12 +912,13 @@ export default function App(){
                   <button style={{background:"none",border:"none",color:BLUE,fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>setTab("registros")}>Ver todas →</button>
                 </div>
                 <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-                  <thead><tr style={{background:BG}}>{["Fecha","KG Brutos","KG Reales","Estado"].map(h=><th key={h} style={{textAlign:"left",padding:"9px 14px",color:MUTED,fontWeight:700,fontSize:10,textTransform:"uppercase"}}>{h}</th>)}</tr></thead>
+                  <thead><tr style={{background:BG}}>{["Fecha","KG Brutos","KG Reales","Plumas aprox.","Estado"].map(h=><th key={h} style={{textAlign:"left",padding:"9px 14px",color:MUTED,fontWeight:700,fontSize:10,textTransform:"uppercase"}}>{h}</th>)}</tr></thead>
                   <tbody>{[...recs].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,4).map((r,i)=>(
                     <tr key={r.id} style={{borderTop:`1px solid ${BORDER}`,background:i%2===0?WHITE:"#FAFBFD"}}>
                       <td style={{padding:"10px 14px",fontWeight:700}}>{r.fecha}</td>
                       <td style={{padding:"10px 14px",color:MUTED,fontWeight:600}}>{fmt(r.kgBruto)} kg</td>
                       <td style={{padding:"10px 14px",fontWeight:800,color:BLUE}}>{fmt(r.kgReal)} kg</td>
+                      <td style={{padding:"10px 14px",color:MUTED,fontWeight:600}}>≈ {fmt(Math.round(r.kgReal*PLUMAS_POR_KG))}</td>
                       <td style={{padding:"10px 14px"}}><EstadoBadge estado={r.estado}/></td>
                     </tr>
                   ))}</tbody>
@@ -938,12 +940,12 @@ export default function App(){
               <div style={{background:WHITE,borderRadius:16,border:`1px solid ${BORDER}`,overflow:"auto",marginBottom:16}}>
                 <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
                   <thead><tr style={{background:BG}}>
-                    {["","Fecha","KG Brutos","KG Reales","Estado","Transformado en","Observaciones",...(isAdmin?[""]:[])].map((h,hi)=>(
+                    {["","Fecha","KG Brutos","KG Reales","Plumas aprox.","Estado","Transformado en","Observaciones",...(isAdmin?[""]:[])].map((h,hi)=>(
                       <th key={h+hi} style={{textAlign:"left",padding:"10px 14px",color:MUTED,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:0.8,whiteSpace:"nowrap"}}>{h}</th>
                     ))}
                   </tr></thead>
                   <tbody>{[...recs].sort((a,b)=>a.fecha.localeCompare(b.fecha)).map((r,i)=>{
-                    if(editRecId===r.id) return <tr key={r.id}><td colSpan={isAdmin?8:7} style={{padding:"8px 14px"}}><RecInlineForm data={editRecData} onChange={setEditRecData} onSave={saveRec} onCancel={()=>setEditRecId(null)}/></td></tr>;
+                    if(editRecId===r.id) return <tr key={r.id}><td colSpan={isAdmin?9:8} style={{padding:"8px 14px"}}><RecInlineForm data={editRecData} onChange={setEditRecData} onSave={saveRec} onCancel={()=>setEditRecId(null)}/></td></tr>;
                     const open=openRecs.includes(r.id);
                     const usado=(r.desglose||[]).reduce((s,d)=>s+Number(d.cantidad||0),0);
                     const restante=Number(r.kgReal)-usado;
@@ -957,6 +959,7 @@ export default function App(){
                         <td style={{padding:"11px 14px",fontWeight:800,whiteSpace:"nowrap"}}>{r.fecha}</td>
                         <td style={{padding:"11px 14px",color:MUTED,fontWeight:600,whiteSpace:"nowrap"}}>{fmt(r.kgBruto)} kg</td>
                         <td style={{padding:"11px 14px",whiteSpace:"nowrap"}}><span style={{fontSize:15,fontWeight:900,color:BLUE}}>{fmt(r.kgReal)}</span><span style={{fontSize:11,color:MUTED,fontWeight:600}}> kg</span></td>
+                        <td style={{padding:"11px 14px",whiteSpace:"nowrap",color:MUTED,fontWeight:600}}>≈ {fmt(Math.round(r.kgReal*PLUMAS_POR_KG))} <span style={{fontSize:10}}>plumas</span></td>
                         <td style={{padding:"11px 14px"}}>
                           {(r.desglose||[]).length>0
                             ?<div style={{display:"flex",flexWrap:"wrap",gap:4}}>{[...new Set(r.desglose.map(d=>d.estado).filter(Boolean))].map(e=><EstadoBadge key={e} estado={e}/>)}</div>
@@ -970,8 +973,8 @@ export default function App(){
                     ];
                     if(open) rows.push(
                       <tr key={`${r.id}-d`} style={{background:BLUE_L}}>
-                        <td colSpan={isAdmin?8:7} style={{padding:"14px 20px 18px 44px"}}>
-                          <div style={{fontSize:10,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Material real a transformar: {fmt(r.kgReal)} kg</div>
+                        <td colSpan={isAdmin?9:8} style={{padding:"14px 20px 18px 44px"}}>
+                          <div style={{fontSize:10,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Material real a transformar: {fmt(r.kgReal)} kg · ≈ {fmt(Math.round(r.kgReal*PLUMAS_POR_KG))} plumas</div>
                           <div style={{display:"flex",flexDirection:"column",gap:6,maxWidth:540}}>
                             {(r.desglose||[]).map((d,j)=>(
                               <div key={j} style={{display:"flex",alignItems:"center",gap:8,background:WHITE,borderRadius:8,padding:"6px 10px",border:`1px solid ${BORDER}`}}>
@@ -1172,7 +1175,7 @@ export default function App(){
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:14,marginBottom:20}}>
                 {[
                   {icon:"🌿",label:"kg de CO₂ evitados",val:(totalReal*2.5).toFixed(1),grad:G_GREEN},
-                  {icon:"🍾",label:"plumas recicladas equiv.",val:fmt(Math.round(totalReal*25)),grad:G_BLUE},
+                  {icon:"🍾",label:"plumas recicladas equiv.",val:fmt(Math.round(totalReal*PLUMAS_POR_KG)),grad:G_BLUE},
                   {icon:"🌳",label:"árboles equiv.",val:(totalReal*0.12).toFixed(1),grad:"linear-gradient(135deg,#14532D,#65A30D)"},
                   {icon:"⚡",label:"kWh ahorrados",val:(totalReal*5.8).toFixed(1),grad:"linear-gradient(135deg,#92400E,#D97706)"},
                 ].map(it=>(
@@ -1202,7 +1205,7 @@ export default function App(){
                   const items=detalle[piezaTab];
                   const totalKgCat=items.reduce((s,p)=>s+p.cantidad*p.kgPieza,0);
                   const totalUndCat=items.reduce((s,p)=>s+p.cantidad,0);
-                  const totalPlumasCat=Math.round(totalKgCat/KG_POR_PLUMA);
+                  const totalPlumasCat=Math.round(totalKgCat*PLUMAS_POR_KG);
                   const totalCO2Cat=(totalKgCat*2.5).toFixed(1);
                   return(
                     <>
