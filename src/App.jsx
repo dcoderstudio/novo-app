@@ -878,7 +878,8 @@ export default function App(){
                   <div style={{fontSize:64,fontWeight:900,color:WHITE,lineHeight:1}}>{fmt(transformadoKg)}</div>
                   <div style={{paddingBottom:8}}>
                     <div style={{fontSize:20,fontWeight:700,color:"rgba(255,255,255,0.45)"}}>/ {fmt(metaKg)} kg</div>
-                    <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",fontWeight:600}}>kg Transformado - Entregado</div>
+                    <div style={{fontSize:12,color:"rgba(255,255,255,0.3)",fontWeight:600}}>= {fmt(Math.round(metaKg*PLUMAS_POR_KG))} plumas</div>
+                    <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",fontWeight:600,marginTop:2}}>kg Transformado - Entregado</div>
                   </div>
                   <div style={{marginLeft:"auto",paddingBottom:4}}>
                     <div style={{fontSize:56,fontWeight:900,color:WHITE,lineHeight:1,textAlign:"right"}}>{pct}<span style={{fontSize:28}}>%</span></div>
@@ -895,7 +896,7 @@ export default function App(){
                   {label:"KG reales netos",val:fmt(totalReal),unit:"kg",plumas:fmt(Math.round(totalReal*PLUMAS_POR_KG)),grad:"linear-gradient(135deg,#1A5FA8,#2176C2)"},
                   {label:"Transformado - Entregado",val:fmt(transformadoKg),unit:"kg",plumas:fmt(Math.round(transformadoKg*PLUMAS_POR_KG)),grad:G_GREEN},
                   {label:"Recepciones",val:recs.length,unit:"lotes",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
-                  {label:"Plumas recicladas",val:fmt(Math.round(totalReal*PLUMAS_POR_KG)),unit:"plumas",meta:`meta: ${fmt(Math.round(metaKg*PLUMAS_POR_KG))} plumas`,grad:G_BLUE},
+                  {label:"Plumas recicladas",val:fmt(Math.round(transformadoKg*PLUMAS_POR_KG)),unit:"plumas",meta:`meta: ${fmt(Math.round(metaKg*PLUMAS_POR_KG))} plumas`,grad:G_BLUE},
                   {label:"Piezas creadas",val:"344",unit:"piezas",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Proyectos activos",val:"2",unit:"en proceso",grad:G_GREEN},
                 ].map(k=>(
@@ -1018,14 +1019,15 @@ export default function App(){
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
                 {[
-                  {label:"Recibido",val:`${fmt(totalBruto)} kg`,grad:"linear-gradient(135deg,#475569,#6B7A99)"},
-                  {label:"Transformado - Entregado",val:`${fmt(transformadoKg)} kg`,grad:G_GREEN},
-                  {label:"En placas",val:`${fmt(enPlacasKg)} kg`,grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
-                  {label:"Libre para transformar",val:`${fmt(libreKg)} kg`,grad:G_BLUE},
+                  {label:"Recibido",val:`${fmt(totalBruto)} kg`,plumas:fmt(Math.round(totalBruto*PLUMAS_POR_KG)),grad:"linear-gradient(135deg,#475569,#6B7A99)"},
+                  {label:"Transformado - Entregado",val:`${fmt(transformadoKg)} kg`,plumas:fmt(Math.round(transformadoKg*PLUMAS_POR_KG)),grad:G_GREEN},
+                  {label:"En placas",val:`${fmt(enPlacasKg)} kg`,plumas:fmt(Math.round(enPlacasKg*PLUMAS_POR_KG)),grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
+                  {label:"Libre para transformar",val:`${fmt(libreKg)} kg`,plumas:fmt(Math.round(libreKg*PLUMAS_POR_KG)),grad:G_BLUE},
                 ].map(k=>(
                   <div key={k.label} style={{background:k.grad,borderRadius:12,padding:"1rem 1.25rem",boxShadow:"0 3px 12px rgba(0,0,0,0.1)"}}>
                     <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{k.label}</div>
                     <div style={{fontSize:22,fontWeight:900,color:WHITE}}>{k.val}</div>
+                    <div style={{fontSize:11,color:"rgba(255,255,255,0.5)",fontWeight:700,marginTop:4}}>≈ {k.plumas} plumas</div>
                   </div>
                 ))}
               </div>
