@@ -6,10 +6,10 @@ const G_HERO="linear-gradient(135deg,#002D5C 0%,#1A5FA8 60%,#2176C2 100%)";
 const G_BLUE="linear-gradient(135deg,#003E74 0%,#1565C0 100%)";
 const G_GREEN="linear-gradient(135deg,#14532D 0%,#16A34A 100%)";
 const G_CARD="linear-gradient(160deg,#ffffff 0%,#f0f4ff 100%)";
-const PIEZAS_TIPOS=["Mobiliario","Llaveros","Portapapeles","Otros"];
-const PIEZAS_ICONS=["🪑","🔑","📋","✨"];
-const PIEZAS_COLORS=[BLUE,BLUE2,"#7C3AED","#0891B2"];
-const PIEZAS_GRADS=["linear-gradient(135deg,#002D5C,#1A5FA8)","linear-gradient(135deg,#1A5FA8,#2176C2)","linear-gradient(135deg,#4C1D95,#7C3AED)","linear-gradient(135deg,#0891B2,#22D3EE)"];
+const PIEZAS_TIPOS=["Mobiliario","Llaveros","Portapapeles","Contenedores","Decorativos","Reconocimientos"];
+const PIEZAS_ICONS=["🪑","🔑","📋","📦","🎨","🏆"];
+const PIEZAS_COLORS=[BLUE,BLUE2,"#7C3AED","#0E7490","#C2410C","#B45309"];
+const PIEZAS_GRADS=["linear-gradient(135deg,#002D5C,#1A5FA8)","linear-gradient(135deg,#1A5FA8,#2176C2)","linear-gradient(135deg,#4C1D95,#7C3AED)","linear-gradient(135deg,#0E7490,#22D3EE)","linear-gradient(135deg,#C2410C,#F97316)","linear-gradient(135deg,#B45309,#F59E0B)"];
 const PLUMAS_POR_KG=45;
 const ETAPAS=["Recepción","Limpieza","Molienda","Placas","Corte","Ensamble","Entregado","Facturado","Pagado"];
 const PROCESO_PRODUCCION=["Recolección","Triturado","Fabricación de molde en CNC","Prensado y vulcanización","Desmoldeo","Aplanado","Corte en CNC","Lijado y pulido","Armado"];
@@ -99,15 +99,19 @@ const DETALLE_INIT={
     {id:1,nombre:"Llavero",cantidad:200,kgPieza:0.04,imagen:""},
   ],
   Portapapeles:[],
-  Otros:[
-    {id:1,nombre:"Logo de piso",cantidad:1,kgPieza:15,imagen:""},
-    {id:2,nombre:"Logotipo para oficinas",cantidad:8,kgPieza:7,imagen:""},
-    {id:3,nombre:"Reconocimiento",cantidad:98,kgPieza:1,imagen:""},
-    {id:4,nombre:"Mural interactivo",cantidad:1,kgPieza:30,imagen:""},
-    {id:5,nombre:"Bote de desechos electrónicos",cantidad:1,kgPieza:0,imagen:""},
-    {id:6,nombre:"Contenedor de plumas",cantidad:1,kgPieza:31,imagen:""},
-    {id:7,nombre:"Contenedores pequeños",cantidad:3,kgPieza:0,imagen:""},
-    {id:8,nombre:"Invitación",cantidad:17,kgPieza:2.82,imagen:""},
+  Contenedores:[
+    {id:1,nombre:"Bote de desechos electrónicos",cantidad:1,kgPieza:0,imagen:""},
+    {id:2,nombre:"Contenedor de plumas",cantidad:1,kgPieza:31,imagen:""},
+    {id:3,nombre:"Contenedores pequeños",cantidad:3,kgPieza:0,imagen:""},
+  ],
+  Decorativos:[
+    {id:1,nombre:"Mural interactivo",cantidad:1,kgPieza:30,imagen:""},
+    {id:2,nombre:"Logo de piso",cantidad:1,kgPieza:15,imagen:""},
+    {id:3,nombre:"Logotipo para oficinas",cantidad:8,kgPieza:7,imagen:""},
+  ],
+  Reconocimientos:[
+    {id:1,nombre:"Reconocimiento",cantidad:98,kgPieza:1,imagen:""},
+    {id:2,nombre:"Invitación",cantidad:17,kgPieza:2.82,imagen:""},
   ],
 };
 
