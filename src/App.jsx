@@ -895,6 +895,7 @@ export default function App(){
                   {label:"KG reales netos",val:fmt(totalReal),unit:"kg",plumas:fmt(Math.round(totalReal*PLUMAS_POR_KG)),grad:"linear-gradient(135deg,#1A5FA8,#2176C2)"},
                   {label:"Transformado - Entregado",val:fmt(transformadoKg),unit:"kg",plumas:fmt(Math.round(transformadoKg*PLUMAS_POR_KG)),grad:G_GREEN},
                   {label:"Recepciones",val:recs.length,unit:"lotes",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
+                  {label:"Plumas recicladas",val:fmt(Math.round(totalReal*PLUMAS_POR_KG)),unit:"plumas",meta:`meta: ${fmt(Math.round(metaKg*PLUMAS_POR_KG))} plumas`,grad:G_BLUE},
                   {label:"Piezas creadas",val:"344",unit:"piezas",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Proyectos activos",val:"2",unit:"en proceso",grad:G_GREEN},
                 ].map(k=>(
@@ -903,6 +904,7 @@ export default function App(){
                     <div style={{fontSize:30,fontWeight:900,color:WHITE,lineHeight:1}}>{k.val}</div>
                     <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontWeight:600,marginTop:4}}>{k.unit}</div>
                     {k.plumas&&<div style={{fontSize:10,color:"rgba(255,255,255,0.5)",fontWeight:700,marginTop:5,borderTop:"1px solid rgba(255,255,255,0.15)",paddingTop:5}}>≈ {k.plumas} plumas</div>}
+                    {k.meta&&<div style={{fontSize:10,color:"rgba(255,255,255,0.5)",fontWeight:700,marginTop:5,borderTop:"1px solid rgba(255,255,255,0.15)",paddingTop:5}}>🎯 {k.meta}</div>}
                   </div>
                 ))}
               </div>
@@ -1261,13 +1263,17 @@ export default function App(){
                                     <div style={{fontSize:18,fontWeight:900,color:PIEZAS_COLORS[idx]}}>{p.cantidad}</div>
                                   </div>
                                   <div style={{background:BG,borderRadius:8,padding:"8px 10px"}}>
-                                    <div style={{fontSize:9,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:0.5,marginBottom:2}}>KG/pieza</div>
+                                    <div style={{fontSize:9,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:0.5,marginBottom:2}}>KG / pieza</div>
                                     <div style={{fontSize:18,fontWeight:900,color:PIEZAS_COLORS[idx]}}>{p.kgPieza}</div>
+                                    <div style={{fontSize:10,color:MUTED,fontWeight:600,marginTop:2}}>≈ {Math.round(p.kgPieza*PLUMAS_POR_KG)} plumas</div>
                                   </div>
                                 </div>
                                 <div style={{marginTop:8,background:BLUE_L,borderRadius:8,padding:"6px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                                  <span style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5}}>Total KG</span>
-                                  <span style={{fontSize:14,fontWeight:900,color:BLUE}}>{fmt(p.cantidad*p.kgPieza)} kg</span>
+                                  <span style={{fontSize:9,fontWeight:700,color:BLUE,textTransform:"uppercase",letterSpacing:0.5}}>Total</span>
+                                  <div style={{textAlign:"right"}}>
+                                    <div style={{fontSize:14,fontWeight:900,color:BLUE}}>{fmt(p.cantidad*p.kgPieza)} kg</div>
+                                    <div style={{fontSize:10,color:BLUE2,fontWeight:700}}>≈ {fmt(Math.round(p.cantidad*p.kgPieza*PLUMAS_POR_KG))} plumas</div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1293,7 +1299,8 @@ export default function App(){
                           <div style={{fontSize:36,marginBottom:12}}>{PIEZAS_ICONS[i]}</div>
                           <div style={{fontSize:18,fontWeight:900,color:WHITE,marginBottom:4}}>{tipo}</div>
                           <div style={{fontSize:28,fontWeight:900,color:WHITE,lineHeight:1,marginBottom:4}}>{totalUnd}</div>
-                          <div style={{fontSize:11,color:"rgba(255,255,255,0.65)",fontWeight:600,marginBottom:8}}>piezas · {fmt(totalKg)} kg</div>
+                          <div style={{fontSize:11,color:"rgba(255,255,255,0.65)",fontWeight:600,marginBottom:4}}>piezas · {fmt(totalKg)} kg</div>
+                          <div style={{fontSize:11,color:"rgba(255,255,255,0.5)",fontWeight:700,marginBottom:8}}>≈ {fmt(Math.round(totalKg*PLUMAS_POR_KG))} plumas</div>
                           <div style={{fontSize:11,color:"rgba(255,255,255,0.5)",fontWeight:700}}>Ver detalle →</div>
                         </div>
                       );
