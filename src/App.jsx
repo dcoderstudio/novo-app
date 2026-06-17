@@ -78,8 +78,8 @@ const PROYECTOS_INIT=[
   {id:12,nombre:"Fabricación de contenedor",kg:31,etapa:8,fecha:"2025-10-02"},
   {id:14,nombre:"17 Invitaciones ISTH",kg:48,etapa:7,fecha:"2026-05-04"},
   {id:15,nombre:"350 organizadores Sogoya",kg:1400,etapa:3,fecha:"2026-05-04"},
-  {id:16,nombre:"200 llaveros",kg:8,etapa:7,fecha:"2026-05-04"},
-  {id:17,nombre:"22 reconocimientos",kg:22,etapa:7,fecha:"2026-05-04"},
+  {id:16,nombre:"200 llaveros",kg:8,etapa:8,fecha:"2026-05-04"},
+  {id:17,nombre:"22 reconocimientos",kg:22,etapa:8,fecha:"2026-05-04"},
   {id:19,nombre:"700 Organizadores viales",kg:520,etapa:4,fecha:"2026-02-17"},
   {id:20,nombre:"700 Portapapeles",kg:420,etapa:3,fecha:"2026-05-04"},
 ];
