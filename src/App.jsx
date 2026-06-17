@@ -84,9 +84,9 @@ const PROYECTOS_INIT=[
   {id:20,nombre:"700 Portapapeles",kg:420,etapa:3,fecha:"2026-05-04"},
 ];
 const HISTORICO_FULL=[
-  {mes:"Sep 24",kg:120},{mes:"Oct 24",kg:0},{mes:"Nov 24",kg:264},{mes:"Dic 24",kg:0},
-  {mes:"Ene 25",kg:0},{mes:"Feb 25",kg:0},{mes:"Mar 25",kg:0},{mes:"Abr 25",kg:0},{mes:"May 25",kg:0},{mes:"Jun 25",kg:0},{mes:"Jul 25",kg:0},{mes:"Ago 25",kg:0},{mes:"Sep 25",kg:0},{mes:"Oct 25",kg:40},{mes:"Nov 25",kg:0},{mes:"Dic 25",kg:0},
-  {mes:"Ene 26",kg:0},{mes:"Feb 26",kg:521.4},{mes:"Mar 26",kg:0},{mes:"Abr 26",kg:0},{mes:"May 26",kg:1848},
+  {mes:"Sep 24",kg:150},{mes:"Oct 24",kg:0},{mes:"Nov 24",kg:380},{mes:"Dic 24",kg:0},
+  {mes:"Ene 25",kg:0},{mes:"Feb 25",kg:0},{mes:"Mar 25",kg:0},{mes:"Abr 25",kg:0},{mes:"May 25",kg:0},{mes:"Jun 25",kg:0},{mes:"Jul 25",kg:0},{mes:"Ago 25",kg:0},{mes:"Sep 25",kg:0},{mes:"Oct 25",kg:50},{mes:"Nov 25",kg:0},{mes:"Dic 25",kg:0},
+  {mes:"Ene 26",kg:0},{mes:"Feb 26",kg:651.75},{mes:"Mar 26",kg:0},{mes:"Abr 26",kg:0},{mes:"May 26",kg:2109},
 ];
 const DETALLE_INIT={
   Mobiliario:[
@@ -1131,13 +1131,13 @@ export default function App(){
                 ))}
               </div>
               <div style={{background:WHITE,borderRadius:16,padding:"1.5rem",border:`1px solid ${BORDER}`,marginBottom:16}}>
-                <div style={{fontSize:11,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:1,marginBottom:16}}>KG reales por mes</div>
+                <div style={{fontSize:11,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:1,marginBottom:16}}>KG brutos recibidos por mes</div>
                 <LineChart data={filtered}/>
               </div>
               <div style={{background:WHITE,borderRadius:16,border:`1px solid ${BORDER}`,overflow:"hidden"}}>
                 <div style={{padding:"1rem 1.5rem",borderBottom:`1px solid ${BORDER}`}}><div style={{fontSize:11,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:1}}>Desglose mensual</div></div>
                 <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-                  <thead><tr style={{background:BG}}>{["Mes","KG reales","vs anterior",""].map(h=><th key={h} style={{textAlign:"left",padding:"9px 14px",color:MUTED,fontWeight:700,fontSize:10,textTransform:"uppercase"}}>{h}</th>)}</tr></thead>
+                  <thead><tr style={{background:BG}}>{["Mes","KG brutos","vs anterior",""].map(h=><th key={h} style={{textAlign:"left",padding:"9px 14px",color:MUTED,fontWeight:700,fontSize:10,textTransform:"uppercase"}}>{h}</th>)}</tr></thead>
                   <tbody>{filtered.map((d,i)=>{
                     const prev=i>0?filtered[i-1].kg:null;
                     const diff=prev!==null?+(d.kg-prev).toFixed(2):null;
