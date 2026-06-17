@@ -95,11 +95,19 @@ const DETALLE_INIT={
     {id:3,nombre:"Maceta",cantidad:2,kgPieza:9,imagen:""},
     {id:4,nombre:"Banco bajo",cantidad:2,kgPieza:7,imagen:""},
   ],
-  Llaveros:[],
+  Llaveros:[
+    {id:1,nombre:"Llavero",cantidad:200,kgPieza:0.04,imagen:""},
+  ],
   Portapapeles:[],
   Otros:[
-    {id:1,nombre:"Logo grande",cantidad:1,kgPieza:15,imagen:""},
-    {id:2,nombre:"Logotipo",cantidad:8,kgPieza:7,imagen:""},
+    {id:1,nombre:"Logo de piso",cantidad:1,kgPieza:15,imagen:""},
+    {id:2,nombre:"Logotipo para oficinas",cantidad:8,kgPieza:7,imagen:""},
+    {id:3,nombre:"Reconocimiento",cantidad:98,kgPieza:1,imagen:""},
+    {id:4,nombre:"Mural interactivo",cantidad:1,kgPieza:30,imagen:""},
+    {id:5,nombre:"Bote de desechos electrónicos",cantidad:1,kgPieza:0,imagen:""},
+    {id:6,nombre:"Contenedor de plumas",cantidad:1,kgPieza:31,imagen:""},
+    {id:7,nombre:"Contenedores pequeños",cantidad:3,kgPieza:0,imagen:""},
+    {id:8,nombre:"Invitación",cantidad:17,kgPieza:2.82,imagen:""},
   ],
 };
 
