@@ -60,7 +60,7 @@ const RECEPCIONES_INIT=[
   {id:4,fecha:"2024-11-08",kgBruto:50,kgReal:0,estado:"En Stock",transformadoEn:"",obs:"Material flexible de otro plástico",desglose:[]},
   {id:5,fecha:"2024-11-10",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Complemento entrega anterior (32kg), Bases para trofeos (18kg)",obs:"El resto se utilizó con polvo de molienda",desglose:[{cantidad:32,descripcion:"Complemento entrega anterior",estado:"Transformado"},{cantidad:18,descripcion:"Bases para trofeos",estado:"Transformado"}]},
   {id:6,fecha:"2025-10-02",kgBruto:50,kgReal:40,estado:"Transformado",transformadoEn:"Fabricación de contenedor (31kg), Restauración de contenedor",obs:"Tenemos plástico recuperado del sobrante",desglose:[{cantidad:31,descripcion:"Fabricación de contenedor",estado:"Transformado"},{cantidad:9,descripcion:"Restauración de contenedor",estado:"Transformado"}]},
-  {id:7,fecha:"2026-02-17",kgBruto:650,kgReal:520,estado:"En Placas",transformadoEn:"",obs:"Destinado a fabricación de 700 piezas",desglose:[]},
+  {id:7,fecha:"2026-02-17",kgBruto:650,kgReal:520,estado:"En Placas",transformadoEn:"700 Portapapeles (342.23kg)",obs:"Destinado a fabricación de 700 piezas",desglose:[{cantidad:342.23,descripcion:"700 Portapapeles",estado:"Transformado"},{cantidad:177.77,descripcion:"Resto del lote (otras piezas)",estado:"En Placas"}]},
   {id:8,fecha:"2026-02-23",kgBruto:1.75,kgReal:1.4,estado:"En Stock",transformadoEn:"",obs:"",desglose:[]},
   {id:9,fecha:"2026-05-04",kgBruto:60,kgReal:48,estado:"Transformado",transformadoEn:"17 Invitaciones ISTH",obs:"",desglose:[{cantidad:48,descripcion:"17 Invitaciones ISTH",estado:"Transformado"}]},
   {id:10,fecha:"2026-05-04",kgBruto:2049,kgReal:1800,estado:"En Placas",transformadoEn:"Se transformará en 350 organizadores Sogoya, 200 llaveros (8kg), 22 reconocimientos (22kg)",obs:"El material útil para transformar fue más de lo que esperábamos por lo que nos sobrarán aprox. 400 kg de plástico a transformar",desglose:[{cantidad:1400,descripcion:"350 organizadores Sogoya",estado:"En Placas"},{cantidad:8,descripcion:"200 llaveros",estado:"Transformado"},{cantidad:22,descripcion:"22 reconocimientos",estado:"Transformado"},{cantidad:370,descripcion:"Excedente disponible para transformar",estado:"En Placas"}]},
@@ -904,7 +904,7 @@ export default function App(){
                   {label:"Transformado - Entregado",val:fmt(transformadoKg),unit:"kg",plumas:fmt(Math.round(transformadoKg*PLUMAS_POR_KG)),grad:G_GREEN},
                   {label:"Recepciones",val:recs.length,unit:"lotes",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Plumas recicladas",val:fmt(Math.round(transformadoKg*PLUMAS_POR_KG)),unit:"plumas",meta:`meta: ${fmt(Math.round(metaKg*PLUMAS_POR_KG))} plumas`,grad:G_BLUE},
-                  {label:"Piezas creadas",val:"344",unit:"piezas",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
+                  {label:"Piezas creadas",val:"1,044",unit:"piezas",grad:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
                   {label:"Proyectos activos",val:"2",unit:"en proceso",grad:G_GREEN},
                 ].map(k=>(
                   <div key={k.label} style={{background:k.grad,borderRadius:16,padding:"1.25rem",boxShadow:"0 4px 20px rgba(0,0,0,0.12)"}}>
