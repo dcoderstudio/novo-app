@@ -98,7 +98,9 @@ const DETALLE_INIT={
   Llaveros:[
     {id:1,nombre:"Llavero",cantidad:200,kgPieza:0.04,imagen:""},
   ],
-  Portapapeles:[],
+  Portapapeles:[
+    {id:1,nombre:"Portapapeles",cantidad:700,kgPieza:0.4889,imagen:""},
+  ],
   Contenedores:[
     {id:1,nombre:"Bote de desechos electrónicos",cantidad:1,kgPieza:0,imagen:""},
     {id:2,nombre:"Contenedor de plumas",cantidad:1,kgPieza:31,imagen:""},
