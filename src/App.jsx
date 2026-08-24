@@ -28,6 +28,7 @@ const PIEZAS_HISTORIA=[
   {nombre:"Contenedores pequeños",cantidad:3,icon:"📦"},
   {nombre:"Invitaciones",cantidad:17,icon:"💌"},
   {nombre:"Llaveros",cantidad:200,icon:"🔑"},
+  {nombre:"Portapapeles",cantidad:700,icon:"📋"},
 ];
 const HISTORIA_SECTIONS=[
   {type:"intro",label:"Inicio"},
@@ -447,7 +448,7 @@ function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,t
               <div style={{fontSize:"clamp(40px,8vw,72px)",fontWeight:900,marginBottom:18,lineHeight:1.05}}>Waste Into Value</div>
               <div style={{fontSize:16,opacity:0.7,marginBottom:40,lineHeight:1.6,maxWidth:560,marginLeft:"auto",marginRight:"auto"}}>De residuo plástico a productos con propósito: este es el recorrido del proyecto desde su primera entrega hasta hoy.</div>
               <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,56px)",flexWrap:"wrap"}}>
-                {[{v:"+500kg",l:"transformados actualmente"},{v:"+2,000kg",l:"en proceso de transformación"},{v:"+150",l:"personas interactuando con las piezas"},{v:"+1000",l:"piezas en fabricación"},{v:"344",l:"piezas creadas"}].map((s,i)=>(
+                {[{v:"+500kg",l:"transformados actualmente"},{v:"+2,000kg",l:"en proceso de transformación"},{v:"+150",l:"personas interactuando con las piezas"},{v:"+1000",l:"piezas en fabricación"},{v:"1,044",l:"piezas creadas"}].map((s,i)=>(
                   <div key={s.l} className="hist-stat" style={{animationDelay:`${0.15+i*0.1}s`}}>
                     <div style={{fontSize:"clamp(28px,5vw,44px)",fontWeight:900}}>{s.v}</div>
                     <div style={{fontSize:11,opacity:0.55,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{s.l}</div>
@@ -561,7 +562,7 @@ function HistoriaModal({showHistoria,setShowHistoria,slideIdx,setSlideIdx,recs,t
           {page.type==="piezas"&&(
             <div style={{maxWidth:860,width:"100%",textAlign:"center"}}>
               <div style={{fontSize:13,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.55,marginBottom:8}}>Lo que hemos creado</div>
-              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>344 piezas creadas</div>
+              <div style={{fontSize:"clamp(26px,5vw,38px)",fontWeight:900,marginBottom:8}}>1,044 piezas creadas</div>
               <div style={{fontSize:15,opacity:0.6,marginBottom:36}}>a partir de plástico reciclado · +500 kg transformados hasta ahora</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:14}}>
                 {PIEZAS_HISTORIA.map((p,i)=>(
